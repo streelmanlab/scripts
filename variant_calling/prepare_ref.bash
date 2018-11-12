@@ -28,7 +28,7 @@ get_input() {
 	outputFile="prepare_ref.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:t:q:j:o:m:M" opt; do
+	while getopts "N:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
 		N ) name=$OPTARG ;;
 		l ) memory=$OPTARG ;;

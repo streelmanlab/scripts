@@ -26,7 +26,7 @@ get_input() {
 	outputFile="job1.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:q:j:o:m:M" opt; do
+	while getopts "N:l:q:j:o:m:M:h" opt; do
 		case $opt in
 		N ) name=$OPTARG ;;
 		l ) time=$OPTARG ;;

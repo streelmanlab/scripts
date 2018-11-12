@@ -5,13 +5,13 @@
 
 #Usage statement
 usage () {
-        echo "Usage: filtered_fastq_to_bam.bash filtered_fastq_1 filtered_fastq_2 [options]
+        echo "Usage: filtered_fastq_to_bam.bash filtered_fastq_1 filtered_fastq_2 reference outputFile [options]
 		-N Name of Job
 		-l memnory
 		-t hh:mm:ss time needed, job will be killed if exceeded
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
-		-o name of outputfile
+		-o name of the job's outputfile
 		-m controls when email is sent to the submitter
 		-M email of submitter"
 }
@@ -20,6 +20,8 @@ usage () {
 get_input() {
 	fastq1=$1
 	fastq2=$2
+	ref=$3
+	out=$4
 	name=job1
 	memory="mem=128gb"
 	time="walltime=40:00:00"
@@ -28,7 +30,7 @@ get_input() {
 	outputFile="job1.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:t:q:j:o:m:M" opt; do
+	while getopts "N:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
 		N ) name=$OPTARG ;;
 		l ) memory=$OPTARG ;;
@@ -55,6 +57,12 @@ check_files() {
 		usage
 		exit 1
 	fi
+
+	if [ -z "$ref" ] || [ ! -f "$ref" ]; then
+                echo "The reference file does not exist. Exiting the program."
+                usage
+                exit 1
+        fi
 	
 }
 
@@ -74,8 +82,8 @@ module purge
 module load open64/4.5.1
 module load bwa/0.7.4     #loads bwa package
 module load samtools      #   loads samtools package
-bwa mem -M M_zebra_UMD2a.fasta NUM_R1.fastq_filtered NUM_R2.fastq_filtered > NUM_bwa.sam     #creates the SAM
-samtools view -bS NUM_bwa.sam > NUM.bam       #Converts to BAM" > filtered_fastq_to_bam.pbs
+bwa mem -M $ref $fastq1 $fastq2 > $out"".sam     #creates the SAM
+samtools view -bS $out"".sam > $out       #Converts to BAM" > filtered_fastq_to_bam.pbs
 }
 
 main() {
@@ -88,10 +96,3 @@ main() {
 
 
 main "$@"
-
-# OLD
-#
-#readNum=$1
-#
-#cat filter.pbs | sed -e "s/NUM/$readNum/g" > /nv/hp10/ggruenhagen3/scratch/toothseq/fastq/scripts/"$readNum"_tmp.pbs
-#qsub /nv/hp10/ggruenhagen3/scratch/toothseq/fastq/scripts/"$readNum"_tmp.pbs
