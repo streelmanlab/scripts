@@ -68,7 +68,7 @@ generate_pbs() {
 #PBS -m $emailOpts
 #PBS -M $email
 
-cd $PBS_O_WORKDIR
+cd \$PBS_O_WORKDIR
 module load java/1.8.0_25
 $gatk CreateSequenceDictionary -R $ref -O $ref"".dict
 

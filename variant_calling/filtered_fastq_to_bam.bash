@@ -77,7 +77,7 @@ generate_pbs() {
 #PBS -m $emailOpts
 #PBS -M $email
 
-cd $PBS_O_WORKDIR
+cd \$PBS_O_WORKDIR
 module purge
 module load open64/4.5.1
 module load bwa/0.7.4     #loads bwa package

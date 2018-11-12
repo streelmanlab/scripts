@@ -64,7 +64,7 @@ generate_pbs() {
 #PBS -o $outputFile
 #PBS -m $emailOpts
 #PBS -M $email
-cd $PBS_O_WORKDIR
+cd \$PBS_O_WORKDIR
 module load ngsqc_toolkit/2.3.3/
 IlluQC.pl -pe $fastq1 $fastq2 N A" > filter_fastq.pbs
 }
