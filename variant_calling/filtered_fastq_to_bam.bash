@@ -22,12 +22,12 @@ get_input() {
 	fastq2=$2
 	ref=$3
 	out=$4
-	name=job1
+	name="$out"
 	memory="mem=128gb"
 	time="walltime=40:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
-	outputFile="job1.out"
+	outputFile="$out"".out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
 	while getopts "N:l:t:q:j:o:m:M:h" opt; do
@@ -64,6 +64,11 @@ check_files() {
                 exit 1
         fi
 	
+	if [ -z "$out" ]; then
+		echo "Please specify an output file."
+		usage
+		exit 1
+	fi	
 }
 
 generate_pbs() {
