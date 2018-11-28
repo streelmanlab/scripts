@@ -18,8 +18,8 @@ usage () {
 #Command-line options
 get_input() {
 	fastq1=$1
-	shift
 	fastq2=$2
+	shift
 	shift
 	
 	name=job_"$fastq_id"

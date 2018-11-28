@@ -21,8 +21,8 @@ usage () {
 #Command-line options
 get_input() {
 	bam=$1
-	shift
 	picard=$2
+	shift
 	shift
 	
 	name="$bam"

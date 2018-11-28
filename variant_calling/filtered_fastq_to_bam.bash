@@ -19,12 +19,12 @@ usage () {
 #Command-line options
 get_input() {
 	fastq1=$1
-	shift
 	fastq2=$2
-	shift
 	ref=$3
-	shift
 	out=$4
+	shift
+	shift
+	shift
 	shift
 	name="$out"
 	memory="mem=128gb"

@@ -29,8 +29,8 @@ usage () {
 #Command-line options
 get_input() {
 	ref=$1
-	shift
 	gatk=$2
+	shift
 	shift
 	
 	gatkOut="out.vcf"
@@ -66,9 +66,7 @@ get_input() {
 }
 
 check_files() {
-	shift $((OPTIND -1))
-	echo "The first value in bams is $bams"
-	if [ "${#bams[@]}" < 1 ]; then
+	if [ ${#bams[@]} -eq 0 ]; then
 		echo "At least one bam file must be supplied.Exiting the program."
 		usage
 		exit 1
@@ -122,7 +120,7 @@ java -jar $gatk -R $ref -T HaplotypeCaller $bamsString -stand_call_conf $minPhre
 
 main() {
 	get_input "$@"
-	check_files
+	#check_files
 	list_bams
 	generate_pbs
 	
