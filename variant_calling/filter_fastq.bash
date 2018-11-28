@@ -18,7 +18,10 @@ usage () {
 #Command-line options
 get_input() {
 	fastq1=$1
+	shift
 	fastq2=$2
+	shift
+	
 	name=job_"$fastq_id"
 	time="walltime=10:00:00"
 	cluster="biocluster-6"

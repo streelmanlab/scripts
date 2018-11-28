@@ -21,7 +21,10 @@ usage () {
 #Command-line options
 get_input() {
 	bam=$1
+	shift
 	picard=$2
+	shift
+	
 	name="$bam"
 	memory="mem=128gb"
 	time="walltime=8:00:00"

@@ -19,7 +19,9 @@ usage () {
 #Command-line options
 get_input() {
 	ref=$1
+	shift
 	gatk=$2
+	shift
 	name="prepare_ref"
 	memory="mem=1gb"
 	time="walltime=40:00:00"

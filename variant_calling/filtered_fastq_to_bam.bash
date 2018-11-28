@@ -19,9 +19,13 @@ usage () {
 #Command-line options
 get_input() {
 	fastq1=$1
+	shift
 	fastq2=$2
+	shift
 	ref=$3
+	shift
 	out=$4
+	shift
 	name="$out"
 	memory="mem=128gb"
 	time="walltime=40:00:00"
