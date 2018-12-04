@@ -26,8 +26,17 @@ usage () {
 	-M email of submitter (default: ggruenhagen3@gatech.edu)"
 }
 
+check_for_help() {
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+		usage;
+		exit 0;
+	fi
+}
+
 #Command-line options
 get_input() {
+	check_for_help "$1"
+	
 	ref=$1
 	gatk=$2
 	shift
@@ -61,8 +70,6 @@ get_input() {
 		h ) usage; exit 0;
 		esac
 	done
-	echo "finished getopts"
-	echo
 }
 
 check_files() {
@@ -97,7 +104,6 @@ list_bams() {
 	for bam in "${bams[@]}"; do
 		bamsString+="-I $bam"
 	done
-	echo "$bamsString"
 }
 
 generate_pbs() {
@@ -120,11 +126,11 @@ java -jar $gatk -R $ref -T HaplotypeCaller $bamsString -stand_call_conf $minPhre
 
 main() {
 	get_input "$@"
-	#check_files
+	check_files
 	list_bams
 	generate_pbs
 	
-	#qsub callVariants.pbs
+	qsub callVariants.pbs
 }
 
 
