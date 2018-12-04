@@ -1,11 +1,16 @@
 # Scripts used in variant calling
 ## Workflow:
 ```
-filter_fastq.bash fastq_1 fastq_2 [options]
+bash filter_fastq.bash fastq_1 fastq_2 [options]
 ```
 Download [GATK](https://software.broadinstitute.org/gatk/download/)
 ```
-prepare_ref.bash reference gatk_file_path [options]
+bash prepare_ref.bash reference gatk_file_path [options]
 
-filtered_fastq_to_bam.bash filtered_fastq_1 filtered_fastq_2 reference outputFile [options]
+bash filtered_fastq_to_bam.bash filtered_fastq_1 filtered_fastq_2 reference outputFile [options]
+```
+Download the picard.jar file from the Latest Release of [Picard](https://broadinstitute.github.io/picard/)
+```
+bash bam_prep.bash bamFile picard_file_path [options]
+bash callVariants.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
 ```
