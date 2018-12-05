@@ -18,8 +18,17 @@ usage () {
 		-M email of submitter"
 }
 
+check_for_help() {
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+		usage;
+		exit 0;
+	fi
+}
+
 #Command-line options
 get_input() {
+	check_for_help "$1"
+	
 	bam=$1
 	picard=$2
 	shift
