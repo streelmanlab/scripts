@@ -150,7 +150,7 @@ cd \$PBS_O_WORKDIR
 module purge
 module load java
 
-java -jar $gatk -R $ref -T HaplotypeCaller $bamsString -stand_call_conf $minPhred -o $gatkOut" > callVariants.pbs
+$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut" > callVariants.pbs
 
 if [ ! -z "$intList" ]; then
 	echo -n " -L $intList" >> callVariants.pbs
@@ -160,7 +160,7 @@ if [ ! -z "$exList" ]; then
 fi
 if [ ! -z "$bothList" ]; then
 	echo -n " -L $bothList
-java -jar $gatk -R $ref -T HaplotypeCaller $bamsString -stand_call_conf $minPhred -o $gatkOut -XL $bothList" >> callVariants.pbs
+$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $bamsString -stand-call-conf $minPhred -O $gatkOut -XL $bothList" >> callVariants.pbs
 fi
 }
 
