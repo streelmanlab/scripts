@@ -160,7 +160,7 @@ if [ ! -z "$exList" ]; then
 fi
 if [ ! -z "$bothList" ]; then
 	echo -n " -L $bothList
-$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $bamsString -stand-call-conf $minPhred -O $gatkOut -XL $bothList" >> callVariants.pbs
+$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $bamsString -stand-call-conf $minPhred -O $gatkOut""_2 -XL $bothList" >> callVariants.pbs
 fi
 }
 
