@@ -162,14 +162,11 @@ generate_multi_pbs() {
 
 cd $PBS_O_WORKDIR
 NP=$(wc -l < $PBS_NODEFILE)
-echo $NP
-echo $PWD
 ls ../bin/gatk-4.0.11.0
 
 # add all modules needed here
 module load java/1.8.0_25
 module load gnuparallel/20150422
-module list
 
 #JOBFILE, BATCHSIZE, and BATCHNUM should be set in the environment
 #If they are not, use some defaults.
