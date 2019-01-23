@@ -23,5 +23,6 @@ Note that the most convient way to use haploCalling.bash with lots of files is t
 Download [tabix](https://sourceforge.net/projects/samtools/files/tabix/), bzip will come with the tabix download. Uncompress and make the folder. Add the bgzip and tabix binaries to your path environment variable.
  ```
  bash gatk_concat.bash <vcf_directory> <gatk_file_path> [options]
+ 
  bash filter.bash <vcf_file> [options]
  ```
