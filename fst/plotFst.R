@@ -34,7 +34,7 @@ fst_data <- fst_data[,c("ID","Zfst", "LG", "CHROM", "BIN_START","BIN_END", "WEIG
 
 
 # Plot the data
-jpeg("UMD2a_Bicuspid_vs_Tricuspid_Zfst_edit.jpg", width = 1350, height = 401)
+jpeg("UMD2a_Bicuspid_vs_Tricuspid_Zfst.jpg", width = 1350, height = 401, quality=99)
 plot(fst_data$ID, fst_data$Zfst, col=as.numeric(as.character(fst_data$LG)), xlab="Linkage Group", ylab=expression("Z"[fst]), xaxt="n", main="", pch=20 )
 title(main = expression("UMD2a Bicuspid vs Tricuspid Z"[fst]))
 

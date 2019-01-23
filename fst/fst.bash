@@ -11,6 +11,7 @@ usage () {
 		pop_1: a list of file names of individuals from population 1 separated by a new line
 		pop_1: a list of file names of individuals from population 2 separated by a new line
 		
+		-S no windows
 		-I Fst window size (default: 10000)
 		-T Fst window step (default: 10000)
 		-O name of output vcf file (default: fst.vcf)
@@ -41,6 +42,7 @@ get_input() {
 	shift
 	shift
 	
+	skip=false
 	winSize="10000"
 	winStep="10000"
 	out="fst.vcf"
@@ -52,8 +54,9 @@ get_input() {
 	outputFile="fst.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "I:T:O:N:l:t:q:j:o:m:M:h" opt; do
+	while getopts "SI:T:O:N:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
+		S ) skip=true ;;
 		I ) winSize=$OPTARG ;;
 		T ) winStep=$OPTARG ;;
 		O ) out=$OPTARG ;;
@@ -95,8 +98,13 @@ module load perl/5.14.2
 module load samtools/0.1.18
 module load vcftools/0.1.14.10
 
-vcftools --vcf $vcf --fst-window-size $winSize --fst-window-step $winStep --weir-fst-pop $pop1 --weir-fst-pop $pop2 --out $out
 " > fst.pbs
+
+	if [ "$skip" = true ] ; then
+		echo "vcftools --vcf $vcf --weir-fst-pop $pop1 --weir-fst-pop $pop2 --out $out" >> fst.pbs
+	else
+		echo "vcftools --vcf $vcf --fst-window-size $winSize --fst-window-step $winStep --weir-fst-pop $pop1 --weir-fst-pop $pop2 --out $out" >> fst.pbs
+	fi
 }
 
 main() {
