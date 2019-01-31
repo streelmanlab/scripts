@@ -1,0 +1,1 @@
+awk '{ if (substr($1,0,1) != "#") {info=$8; split(info,arr,"|"); split($8, closestInfo, ","); split(closestInfo[3], geneInfo, ":"); print($1 "\t" $2 "\t" substr(arr[1], 9) "\t" geneInfo[2]);} }' annotated.vcf > annotated_coord_id.vcf

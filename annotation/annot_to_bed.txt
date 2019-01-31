@@ -1,0 +1,1 @@
+awk '{ print $1 "\t" $2 "\t" $2 }' snps_coord_id.vcf > snps_coord_id.bed
