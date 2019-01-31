@@ -1,0 +1,16 @@
+Unbinned:
+1. Annotate a vcf file (remember that Mzebra in the command is the name of the database not the folder)
+2. Find the Fst the for the vcf file without binning
+3. Use the awk command in "raw_annotation_to_coord_id.txt" to only keep necessary info
+4. Edit "FST.SQL.txt" to include the annotation file and the fst file
+5. Use this command 'sqlite3 fst.db < FST.SQL.txt > FST.txt' to find the genes that meet the threshold Fst value you set in FST.SQL.txt (might have to use 'rm fst.db')
+6. Use this command 'python findGenes.py -a FST.txt -t ../../MZ_treefam_annot_umd2a.bash -o annIDs3.txt -p treefamIDs3.txt' to get the HGNC IDs.
+
+Binned:
+1. Find the fst for the vcf file with binning
+2. Use the awk command in "keep_high_10kb.txt" to only keep the 10kb regions that are above an Fst threshold of your choosing
+3. Use the awk command in "raw_annotation_to_coord_id.txt" to only keep necessary info
+4. Use the awk command in "annot_to_bed.txt" to put the file you created in (3) into a bed format for bedtools
+5. Use this command 'bedtools intersect -a snps_high_10kb.bed -b snps_coord_id.bed > intersect.bed' to find the genes that lie in the high 10kb regions
+6. Use this command 'sqlite3 fst.db < FST_BIN.SQL.txt > FST.txt' to find the id of the closest genes to these variants (might have to use 'rm fst.db')
+7. Use this command 'python findGenes.py -a FST.txt -t ../../MZ_treefam_annot_umd2a.bash -o annIDs3.txt -p treefamIDs3.txt' to get the HGNC IDs of the genes
