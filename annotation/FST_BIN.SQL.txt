@@ -1,0 +1,13 @@
+
+CREATE TABLE sect ( chr TEXT, pos1 INTEGER, pos2 INTEGER );
+CREATE TABLE original  ( chr TEXT, pos1 INTEGER, closest INTEGER, id TEXT );
+
+.separator "\t"
+.import ./indels_coord_high_10kb.bed sect
+.import ./indels_coord_id.vcf original
+
+SELECT o.id
+FROM original AS o
+INNER JOIN 
+(SELECT * FROM sect) AS i
+ON o.chr = i.chr AND o.pos1 = i.pos1;

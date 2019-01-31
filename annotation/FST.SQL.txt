@@ -1,0 +1,14 @@
+
+CREATE TABLE annot    ( chr TEXT, pos INTEGER, closest INTEGER, id TEXT );
+CREATE TABLE fixation ( chr TEXT, pos INTEGER, fst INTEGER );
+
+.separator "\t"
+.import ../../results/snps_coord_id.vcf annot
+.import ../../results/snps_no_window.fst fixation
+
+SELECT a.id
+FROM annot AS a
+INNER JOIN 
+(SELECT * FROM fixation WHERE fst > 0.182956 AND fst != "-nan") AS f
+ON a.chr = f.chr AND a.pos = f.pos
+WHERE a.closest <= 25000;
