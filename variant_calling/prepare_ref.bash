@@ -97,7 +97,7 @@ main() {
 	check_files
 	generate_pbs
 	
-	qsub filtered_fastq_to_bam.pbs
+	qsub prepare_ref.pbs
 }
 
 
