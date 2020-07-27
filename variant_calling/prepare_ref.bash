@@ -82,7 +82,7 @@ generate_pbs() {
 
 cd \$PBS_O_WORKDIR
 module load java/1.8.0_25
-$gatk CreateSequenceDictionary -R $ref -O $ref"".dict
+$gatk CreateSequenceDictionary -R $ref -O
 
 module load samtools/0.1.19
 samtools faidx $ref
