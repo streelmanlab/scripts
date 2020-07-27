@@ -85,6 +85,8 @@ get_input() {
 check_files() {
 	mkdir -p "$gatkOut"
 	
+	mkdir -p "$outputDir"
+	
 	if [ ${#bams[@]} -eq 0 ] && [ -z "$bamDir" ]; then
 		echo "Either at least one bam file or a directory of bam files must be given.Exiting the program."
 		usage
