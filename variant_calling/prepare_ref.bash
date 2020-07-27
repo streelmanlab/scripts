@@ -33,7 +33,7 @@ get_input() {
 	shift
 	
 	name="prepare_ref"
-	memory="mem=1gb"
+	memory="mem=8gb"
 	time="walltime=40:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
