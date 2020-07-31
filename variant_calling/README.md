@@ -2,19 +2,21 @@
 ## Introduction:
 These scripts can be used to auto-generate and call pbs scripts on Georgia Tech's PACE server. The scripts contained in this folder are used to call variants.
 
+For scripts that require file paths to a binary, please provide the full path (including the binary in the path).
+
 ## Workflow:
 ```
-bash filter_fastq.bash fastq_1 fastq_2 [options]
+bash filter_fastq.bash <fastq_1> <fastq_2> [options]
 ```
 Download [GATK](https://software.broadinstitute.org/gatk/download/)
 ```
-bash prepare_ref.bash reference gatk_file_path [options]
+bash prepare_ref.bash <reference> <gatk_file_path> [options]
 
-bash filtered_fastq_to_bam.bash filtered_fastq_1 filtered_fastq_2 reference outputFile [options]
+bash filtered_fastq_to_bam.bash <filtered_fastq_1> <filtered_fastq_2> <reference> <outputFile> [options]
 ```
 Download the picard.jar file from the Latest Release of [Picard](https://broadinstitute.github.io/picard/)
 ```
-bash bam_prep.bash bamFile picard_file_path [options]
+bash bam_prep.bash <bamFile> <picard_file_path> [options]
 
 bash haploCalling.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
 ```
@@ -26,3 +28,9 @@ Download [tabix](https://sourceforge.net/projects/samtools/files/tabix/), bzip w
  
  bash filter.bash <vcf_file> [options]
  ```
+### ASE:
+Download [ASEr](https://github.com/TheFraserLab/ASEr). Follow their instructions to install, the steps are simple.
+```
+bash prepare_ref_ase.bash <reference> <ASEr_file_path> [options]
+bash filtered_fastq_to_bam.bash <filtered_fastq_1> <filtered_fastq_2> <reference> <outputFile> [options]
+```
