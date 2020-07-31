@@ -114,7 +114,7 @@ conda activate seurat5
 # Keep only SNPs, mask reference at SNPs, 
 vcftools --vcf $vcf --remove-indels --recode
 $gatk VariantsToTable -R $ref -V out.recode.vcf -O output.table -F CHROM -F POS -F REF -F ALT -F HET -F HOM-REF -F HOM-VAR -F NCALLED -GF GT
-awk '{ if(\$5 > 0) print $0 }' output.table > output.table.het
+awk '{ if(\$5 > 0) print \$0 }' output.table > output.table.het
 python $aser/bin/MaskReferenceFromGATKTable.py $ref output.table.het --outfasta masked.fasta
 #awk 'BEGIN {OFS='\t'} { if ( $0 !~ /^#/ ) print $1 , $2 , $3 }' out.recode.vcf > out.recode.bed
 #perl $aser/perl_scripts/MaskReferencefromBED.pl out.recode.bed $ref masked.fasta
