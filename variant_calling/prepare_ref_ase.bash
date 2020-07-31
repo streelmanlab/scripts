@@ -71,6 +71,9 @@ get_input() {
 check_files() {
 	if [ -z "$aser" ]; then
 		echo "Invalid ASEr file path. Please include ASEr in the file path. Exiting the program."
+		usage
+		exit 1
+	fi
 	if [ -z "$gatk" ] || [ ! -f "$gatk" ]; then
 		echo "Invalid gatk file path. Exiting the program."
 		usage
