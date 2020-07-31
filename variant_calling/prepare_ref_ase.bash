@@ -119,6 +119,7 @@ python $aser/bin/MaskReferenceFromGATKTable.py $ref output.table.het --outfasta 
 #awk 'BEGIN {OFS='\t'} { if ( $0 !~ /^#/ ) print $1 , $2 , $3 }' out.recode.vcf > out.recode.bed
 #perl $aser/perl_scripts/MaskReferencefromBED.pl out.recode.bed $ref masked.fasta
 
+module purge
 # Copied from prepare_ref.bash
 $gatk CreateSequenceDictionary -R masked.fasta
 module load samtools/0.1.19
