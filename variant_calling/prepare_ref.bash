@@ -63,7 +63,7 @@ check_files() {
         fi
 	
 	if [ -z "$gatk" ] || [ ! -f "$gatk" ]; then
-                echo "The reference file does not exist. Exiting the program."
+                echo "The gatk file does not exist. Please give the full file path to the gatk binary (include the gatk binary in the path). Exiting the program."
                 usage
                 exit 1
         fi

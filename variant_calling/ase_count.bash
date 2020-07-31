@@ -136,9 +136,11 @@ module load intel/14.0.2
 module load perl/5.14.2
 module load vcftools/0.1.14.10
 
-# Remove Indels and Prepare the vcf for the ASEReadCounter
+# Purpose: Remove allelic bias where the alt allele has at least 1 mismatch
+# Keep only SNPs, mask reference at SNPs, 
 vcftools --vcf $vcf --remove-indels --recode
-gatk IndexFeatureFile --input out.recode.vcf
+#gatk IndexFeatureFile --input out.recode.vcf
+perl MaskReferencefromBED.pl out.recode.vcf
 
 # Do the actual ASE Read Counting
 $gatk ASEReadCounter -R $ref -V out.recode.vcf -O $out $bamsString
