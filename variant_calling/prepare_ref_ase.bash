@@ -44,7 +44,7 @@ get_input() {
 	shift
 	
 	out="output.table"
-	name="ase_count"
+	name="prepare_ref_ase"
 	memory="mem=16gb"
 	time="walltime=40:00:00"
 	cluster="biocluster-6"
@@ -112,7 +112,7 @@ module load vcftools/0.1.14.10
 # Keep only SNPs, mask reference at SNPs, 
 vcftools --vcf $vcf --remove-indels --recode
 $gatk VariantsToTable -R $ref -V out.recode.vcf -O output.table -F CHROM -F POS -F REF -F ALT -F HET -F HOM-REF -F HOM-VAR -F NCALLED -GF GT
-awk '{ if($5 > 0) print $0 }' output.table > output.table.het
+awk '{ if(\$5 > 0) print $0 }' output.table > output.table.het
 python $aser/bin/MaskReferenceFromGATKTable.py $ref output.table.het --outfasta masked.fasta
 #awk 'BEGIN {OFS='\t'} { if ( $0 !~ /^#/ ) print $1 , $2 , $3 }' out.recode.vcf > out.recode.bed
 #perl $aser/perl_scripts/MaskReferencefromBED.pl out.recode.bed $ref masked.fasta
