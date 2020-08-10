@@ -37,5 +37,5 @@ bash prepare_ref_ase.bash <reference> <ASEr_file_path> [options]
 bash filtered_fastq_to_bam.bash <filtered_fastq_1> <filtered_fastq_2> <reference> <outputFile> [options]
 bash bam_prep.bash <bamFile> <picard_file_path> [options]
 bash haploCalling.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
-ase_count.bash <reference> <vcf_file_path> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [options]
+bash ase_count.bash <reference> <vcf_file_path> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [options]
 ```
