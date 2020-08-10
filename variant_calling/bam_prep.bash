@@ -59,7 +59,7 @@ get_input() {
 
 check_files() {
 	if [ -z "$bam"".bam" ] || [ ! -f "$bam"".bam" ]; then
-		echo "The first fastq file does not exist. Exiting the program."
+		echo "The bam file does not exist. Please remember to exclude the .bam file extension. Exiting the program."
 		usage
 		exit 1
 	fi
