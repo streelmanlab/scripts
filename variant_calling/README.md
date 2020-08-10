@@ -30,7 +30,12 @@ Download [tabix](https://sourceforge.net/projects/samtools/files/tabix/), bzip w
  ```
 ### ASE:
 Download [ASEr](https://github.com/TheFraserLab/ASEr). Follow their instructions to install, the steps are simple.
+
+This follows the same steps as above with an additional first step and last step. The additional first step is to mask the reference genome at sites of heterozygous SNPs. The point of doing this and the realigning everything is to remove allelic imbalance. The alt allele will always have a lower mapping score than the reference allele if the reference genome is not masked. The additional last step is to calculate read counts per allele, the output from this will be used in R.
 ```
 bash prepare_ref_ase.bash <reference> <ASEr_file_path> [options]
 bash filtered_fastq_to_bam.bash <filtered_fastq_1> <filtered_fastq_2> <reference> <outputFile> [options]
+bash bam_prep.bash <bamFile> <picard_file_path> [options]
+bash haploCalling.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
+ase_count.bash <reference> <vcf_file_path> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [options]
 ```
