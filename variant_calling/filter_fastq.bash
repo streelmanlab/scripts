@@ -31,7 +31,7 @@ get_input() {
 	shift
 	shift
 	
-	name=job_"$fastq_id"
+	name=job_"$fastq1"
 	time="walltime=10:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
