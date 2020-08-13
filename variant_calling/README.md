@@ -41,5 +41,9 @@ bash bam_prep.bash <bamFile> <picard_file_path> [options]
 
 bash haploCalling.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
 
+bash gatk_concat.bash <vcf_directory> <gatk_file_path> [options]
+
+bash filter.bash <vcf_file> [options]
+
 bash ase_count.bash <reference> <vcf_file_path> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [options]
 ```
