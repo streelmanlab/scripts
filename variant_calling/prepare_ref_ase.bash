@@ -121,6 +121,7 @@ python $aser/bin/MaskReferenceFromGATKTable.py $ref output.table.het --outfasta 
 
 module purge
 # Copied from prepare_ref.bash
+module load java/1.8.0_25
 $gatk CreateSequenceDictionary -R masked.fasta
 module load samtools/0.1.19
 samtools faidx masked.fasta
