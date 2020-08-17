@@ -59,7 +59,7 @@ get_input() {
 	outputDir="logs"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "I:D:O:S:L:XL:P:N:l:t:q:j:o:m:M:c:h" opt; do
+	while getopts "I:D:O:S:L:X:P:N:l:t:q:j:o:m:M:c:h" opt; do
 		case $opt in
 		I ) bams+=("$OPTARG");;
 		D ) bamDir=$OPTARG;;
