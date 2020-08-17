@@ -149,7 +149,13 @@ generate_jobs() {
 
 generate_xl_jobs() {
 	# One job for everything not on a chromosome
-	echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL $bothList" >> jobs.txt
+	if [ ! -z "$bothList" ]; then
+		# Append the unplaced contig job at the end of all the chromosome jobs
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL $bothList" >> jobs.txt
+	else
+		# Unplaced contigs are the only jobs, make a new file
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL $exList" > jobs.txt
+	fi
 }
 
 generate_multi_pbs() {
@@ -227,14 +233,15 @@ main() {
 	
 	if [ ! -z "$bothList" ] || [ ! -z "$intList" ] || [ ! -z "$exList" ]; then
 		if [ ! -z "$bothList" ]; then
+			echo "Generating jobs that include the provided regions and jobs that exclude the provided regions"
 			list=$bothList
 			generate_jobs
 			generate_xl_jobs
 		elif [ ! -z "$exList" ]; then
-			bothList=$exList
-			echo "Exclusion"
+			echo "Generating jobs exclude the provided region list"
 			generate_xl_jobs
 		else
+			echo "Generating jobs include the provided region list"
 			list=$intList
 			generate_jobs
 		fi
@@ -242,7 +249,7 @@ main() {
 		
 		jobs=$(wc -l < jobs.txt)
 		batch_size=32
-		# make_batch
+		make_batch
 	else
 		echo "Please provide an interval list to call variants on."
 		usage
