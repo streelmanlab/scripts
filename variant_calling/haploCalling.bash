@@ -226,6 +226,8 @@ main() {
 	list_bams
 	
 	echo "$exList"
+	echo $exList
+	echo "$ref"
 	
 	if [ ! -z "$bothList" ] || [ ! -z "$intList" ] || [ ! -z "$exList" ]; then
 		if [ ! -z "$bothList" ]; then
