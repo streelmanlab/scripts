@@ -225,12 +225,12 @@ main() {
 	check_files
 	list_bams
 	
-	if [ ! -z $bothList ] || [ ! -z $intList ] || [ ! -z $exList ]; then
+	if [ ! -z "$bothList" ] || [ ! -z "$intList" ] || [ ! -z "$exList" ]; then
 		if [ ! -z "$bothList" ]; then
 			list=$bothList
 			generate_jobs
 			generate_xl_jobs
-		elif [! -z "$exList" ]; then
+		elif [ ! -z "$exList" ]; then
 			list=$exList
 			generate_xl_jobs
 		else
