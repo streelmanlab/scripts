@@ -231,7 +231,8 @@ main() {
 			generate_jobs
 			generate_xl_jobs
 		elif [ ! -z "$exList" ]; then
-			list=$exList
+			bothList=$exList
+			echo "Exclusion"
 			generate_xl_jobs
 		else
 			list=$intList
@@ -241,7 +242,7 @@ main() {
 		
 		jobs=$(wc -l < jobs.txt)
 		batch_size=32
-		make_batch
+		# make_batch
 	else
 		echo "Please provide an interval list to call variants on."
 		usage
