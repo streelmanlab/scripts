@@ -225,6 +225,8 @@ main() {
 	check_files
 	list_bams
 	
+	echo "$exList"
+	
 	if [ ! -z "$bothList" ] || [ ! -z "$intList" ] || [ ! -z "$exList" ]; then
 		if [ ! -z "$bothList" ]; then
 			list=$bothList
