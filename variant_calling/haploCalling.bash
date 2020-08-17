@@ -67,7 +67,7 @@ get_input() {
 		S ) minPhred=$OPTARG;;
 		N ) name=$OPTARG;;
 		L ) intList=$OPTARG;;
-		X ) exList=$OTPARG;;
+		X ) exList=$OPTARG;;
 		P ) bothList=$OPTARG;;
 		l ) memory=$OPTARG;;
 		t ) time=$OPTARG;;
@@ -224,10 +224,6 @@ main() {
 	get_input "$@"
 	check_files
 	list_bams
-	
-	echo "$exList"
-	echo $exList
-	echo "$ref"
 	
 	if [ ! -z "$bothList" ] || [ ! -z "$intList" ] || [ ! -z "$exList" ]; then
 		if [ ! -z "$bothList" ]; then
