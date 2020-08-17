@@ -225,10 +225,13 @@ main() {
 	check_files
 	list_bams
 	
-	if [ ! -z $bothList ] || [ ! -z $intList ]; then
+	if [ ! -z $bothList ] || [ ! -z $intList ] || [ ! -z $exList ]; then
 		if [ ! -z "$bothList" ]; then
 			list=$bothList
 			generate_jobs
+			generate_xl_jobs
+		elif [! -z "$exList" ]; then
+			list=$exList
 			generate_xl_jobs
 		else
 			list=$intList
@@ -239,6 +242,10 @@ main() {
 		jobs=$(wc -l < jobs.txt)
 		batch_size=32
 		make_batch
+	else
+		echo "Please provide an interval list to call variants on."
+		usage
+		exit 1
 	fi
 }
 
