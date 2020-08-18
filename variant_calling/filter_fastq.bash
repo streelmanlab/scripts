@@ -7,10 +7,11 @@
 usage () {
         echo "Usage: filter_fastq.bash fastq_1 fastq_2 [options]
 		-N Name of Job
-		-l hh:mm:ss time needed, job will be killed if exceeded
+		-l memory (default: mem=2gb)
+		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=10:00:00)
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
-		-o name of outputfile
+		-o name of outputfile (filter_f_JOBID.out)
 		-m controls when email is sent to the submitter
 		-M email of submitter"
 }
@@ -31,17 +32,19 @@ get_input() {
 	shift
 	shift
 	
-	name=job_"$fastq1"
+	name=filter_f_"$fastq1"
+	memory="mem=2gb"
 	time="walltime=10:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
-	outputFile="job1.out"
+	outputFile="filter_f_\$PBS_JOBID.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:q:j:o:m:M:h" opt; do
+	while getopts "N:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
 		N ) name=$OPTARG ;;
-		l ) time=$OPTARG ;;
+		l ) memory=$OPTARG ;;
+		t ) time=$OPTARG ;;
 		q ) cluster=$OPTARG ;;
 		j ) writingOpts=$OPTARG ;;
 		o ) outputFile=$OPTARG ;;
@@ -70,6 +73,7 @@ check_files() {
 generate_pbs() {
 	echo "#PBS -N $name
 #PBS -l nodes=2:ppn=4
+#PBS -l $memory
 #PBS -l $time
 #PBS -q $cluster
 #PBS -j $writingOpts
