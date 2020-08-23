@@ -164,10 +164,6 @@ generate_xl_jobs() {
 	fi
 }
 
-convert_to_bed() {
-	
-}
-
 generate_multi_pbs() {
 	echo $time
 	echo '#PBS -N multi-paralleljob
