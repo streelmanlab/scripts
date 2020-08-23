@@ -150,12 +150,22 @@ generate_jobs() {
 generate_xl_jobs() {
 	# One job for everything not on a chromosome
 	if [ ! -z "$bothList" ]; then
+		# Convert from chr1:1-100 format to bed format (separated by tabs)
+		awk 'BEGIN {OFS="\t"} { p=index($0,":"); pos=substr($0,p+1);chrom=substr($0, 0,p-1); dash=index(pos,"-"); start=substr(pos,0,dash-1); stop=substr(pos,dash+1); print chrom, start, stop }' $bothList > pos.bed
+		
 		# Append the unplaced contig job at the end of all the chromosome jobs
-		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL $bothList" >> jobs.txt
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" >> jobs.txt
 	else
+		# Convert from chr1:1-100 format to bed format (separated by tabs)
+		awk 'BEGIN {OFS="\t"} { p=index($0,":"); pos=substr($0,p+1);chrom=substr($0, 0,p-1); dash=index(pos,"-"); start=substr(pos,0,dash-1); stop=substr(pos,dash+1); print chrom, start, stop }' $exList > pos.bed
+		
 		# Unplaced contigs are the only jobs, make a new file
-		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL $exList" > jobs.txt
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" > jobs.txt
 	fi
+}
+
+convert_to_bed() {
+	
 }
 
 generate_multi_pbs() {
