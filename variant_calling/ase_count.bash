@@ -138,12 +138,12 @@ module load vcftools/0.1.14.10
 
 # Purpose: Remove allelic bias where the alt allele has at least 1 mismatch
 # Keep only SNPs, mask reference at SNPs, 
-vcftools --vcf $vcf --remove-indels --recode
+# vcftools --vcf $vcf --remove-indels --recode
 #gatk IndexFeatureFile --input out.recode.vcf
-perl MaskReferencefromBED.pl out.recode.vcf
+# perl MaskReferencefromBED.pl out.recode.vcf
 
 # Do the actual ASE Read Counting
-$gatk ASEReadCounter -R $ref -V out.recode.vcf -O $out $bamsString
+$gatk ASEReadCounter -R $ref -V $vcf -O $out $bamsString
 " > ase_count.pbs
 }
 
