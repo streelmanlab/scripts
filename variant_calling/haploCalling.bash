@@ -17,6 +17,7 @@ usage () {
 	-L interval list
 	-X intervals to exclude
 	-P run with intervals and again without excluding intervals
+	-B batch size: how many jobs run together (default: 32)
 	
 	PBS Options:
 	-N Name of Job
@@ -47,6 +48,7 @@ get_input() {
 	
 	gatkOut="vcfDir"
 	minPhred="30"
+	batch_size=32
 	intList=""
 	exList=""
 	bothList=""
@@ -59,7 +61,7 @@ get_input() {
 	outputDir="logs"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "I:D:O:S:N:L:X:P:l:t:q:j:o:m:M:c:h" opt; do
+	while getopts "I:D:O:S:N:L:X:P:B:l:t:q:j:o:m:M:c:h" opt; do
 		case $opt in
 		I ) bams+=("$OPTARG");;
 		D ) bamDir=$OPTARG;;
@@ -69,6 +71,7 @@ get_input() {
 		L ) intList=$OPTARG;;
 		X ) exList=$OPTARG;;
 		P ) bothList=$OPTARG;;
+		B ) batch_size=$OPTARG;;
 		l ) memory=$OPTARG;;
 		t ) time=$OPTARG;;
 		q ) cluster=$OPTARG ;;
@@ -254,7 +257,6 @@ main() {
 		generate_multi_pbs
 		
 		jobs=$(wc -l < jobs.txt)
-		batch_size=32
 		make_batch
 	else
 		echo "Please provide an interval list to call variants on."
