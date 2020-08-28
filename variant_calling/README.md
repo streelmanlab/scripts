@@ -47,7 +47,7 @@ bash filter.bash <vcf_file> [options]
 
 bash ase_count.bash <reference> <vcf_file_path> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [options]
 ```
-Then use snpEff to find the closest gene. If you want NCBI genes use ```Mzebra``` or if you want ensemble genes use ```Mzebra_2```. For the former, your ```output.table``` must use NCBI scaffolds. For the latter, use LGs.
+Then use snpEff to find the closest gene. If you want NCBI genes use ```Mzebra``` or if you want ensemble genes use ```Mzebra_ENS```. For the former, your ```output.table``` must use NCBI scaffolds. For the latter, use LGs.
 ```
 cd /nv/hp10/cpatil6/genomics-shared/snpEff
 
