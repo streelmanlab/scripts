@@ -230,7 +230,7 @@ make_batch() {
 	if [ $rem != 0 ]; then
 		# This is just so that way each batch has as many jobs as nodes*ppn
 		for ((j=0;j<$(( batch_size - rem));j+=1)); do
-			echo "touch $gatk" >> jobs.txt
+			echo "ls $gatk" >> jobs.txt
 		done
 	fi
 }
