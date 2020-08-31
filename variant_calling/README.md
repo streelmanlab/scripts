@@ -20,7 +20,7 @@ bash bam_prep.bash <bamFile> <picard_file_path> [options]
 
 bash haploCalling.bash <reference> <gatk_file_path> [-I <bam_file>... or -D <bam_dir>] [GATK_options] [pbs_options]
 ```
-Note that the most convient way to use haploCalling.bash with lots of files is to use an interval list for the chromosomes and another interval list for the unmapped contigs. The interval list must be in this format "contig:start-stop".
+Note that the most convient way to use haploCalling.bash with lots of files is to use an interval list for the chromosomes and another interval list for the unmapped contigs. The interval list must be in this format "contig:start-stop". (Tip: on the unmapped contigs run, shuffle the contigs, run haploCalling.bash with a batch size of 160, when complete rename the files based on the contig otherwise they cannot be concatenated)
 
 Download [tabix](https://sourceforge.net/projects/samtools/files/tabix/), bzip will come with the tabix download. Uncompress and ```make``` the folder. Add the bgzip and tabix binaries to your path environment variable.
  ```
