@@ -1,0 +1,10 @@
+
+Haplotype Calling on Unplaced Contigs:
+shuf ~/scratch/ase/xl_chunks.bed > xl_chunks_shuf.bed
+
+bash ~/scratch/ase/scripts/variant_calling/haploCalling.bash ~/scratch/ase/M_zebra_UMD2a.fasta ~/scratch/bin/gatk-4.1.8.1/gatk -D ~/scratch/ts_ms/bams/ -L ~/scratch/ase/xl_chunks_shuf.bed -B 160 -O xlDir
+
+cd xlDir
+for f in * ; do mv -- "$f" "xl_$f" ; done
+
+bash fix_fname.bash
