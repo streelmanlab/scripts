@@ -22,7 +22,7 @@ usage () {
 	PBS Options:
 	-N Name of Job
 	-l memory (default: mem=128gb)
-	-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=60:00:00)
+	-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=80:00:00)
 	-q specifies process queue (default: biocluster-6)
 	-j controls what gets written to the ouputfile (default: oe)
 	-o name of the job's output directory where log files are stored (default: logs)
@@ -55,7 +55,7 @@ get_input() {
 	name="variant calling"
 	memory="mem=128gb"
 	cores="nodes=1:ppn=1"
-	time="walltime=60:00:00"
+	time="walltime=80:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputDir="logs"
