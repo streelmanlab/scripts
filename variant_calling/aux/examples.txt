@@ -1,5 +1,5 @@
 
-Haplotype Calling on Unplaced Contigs:
+#Haplotype Calling on Unplaced Contigs:
 shuf ~/scratch/ase/xl_chunks.bed > xl_chunks_shuf.bed
 
 bash ~/scratch/ase/scripts/variant_calling/haploCalling.bash ~/scratch/ase/M_zebra_UMD2a.fasta ~/scratch/bin/gatk-4.1.8.1/gatk -D ~/scratch/ts_ms/bams/ -L ~/scratch/ase/xl_chunks_shuf.bed -B 160 -O xlDir
@@ -8,3 +8,25 @@ cd xlDir
 for f in * ; do mv -- "$f" "xl_$f" ; done
 
 bash fix_fname.bash
+
+#Finding genes within 25kb:
+# 1. Annotate with snpEff
+# 2. Convert that file to a pseduo-bed file so that bedtools works on it 
+# 3. Find fixed varinats
+# 4. Use bedtools to find intersection of the vcf and the coordinates of fixed variants and highly divergent bins
+# 5. Use filter_vcf.py script to find the genes within 25kb
+
+# 2
+awk 'BEGIN { FS="\t"; OFS="\t" } { $2=$2 "\t" $2 } 1' whole_filter_rm_lg_closest_08_31_20.vcf > vcf_lg.bed
+
+# 3
+awk '{OFS="\t"} { if ($3 ~ /^[0-9]+$/ && $3 > 0.99) {print $1,$2,$2,$3} }' snp_no_window.fst > snp_fix.bed
+awk '{OFS="\t"} { if ($3 ~ /^[0-9]+$/ && $3 > 0.99) {print $1,$2,$2,$3} }' indel_no_window.fst > indel_fix.bed
+cat snp_fix.bed indel_fix.bed > var_fix.bed
+
+#4
+bedtools intersect -wa -a vcf_lg.bed -b var_fix.bed > var_fix_lg.vcf
+
+# 5
+python filter_vcf.py ~/scratch/ts_ms/no_1615_1621_1984_08_31_20/var_fix_lg.vcf ~/scratch/bin/snpEff/Mzebra_% var_fix.txt -e -c 8
+cat var_fix.txt sig_bin.txt | sort | uniq > var_fix_sig_bin_25kb_genes.txt
