@@ -12,7 +12,7 @@ usage () {
 		-I bam file(s) to call (must use -I or -D)
 		-D directory of bam files (must use -I or -D)
 		
-		-O name of output file (default: output.table)
+		-O name of output directory of output tables (default: output_table)
 		-N Name of Job
 		-l memory
 		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=10:00:00)
@@ -41,7 +41,7 @@ get_input() {
 	shift
 	shift
 	
-	out="output.table"
+	out="output_table"
 	name="ase_count"
 	memory="mem=16gb"
 	time="walltime=40:00:00"
@@ -69,6 +69,8 @@ get_input() {
 }
 
 check_files() {
+	mkdir -p "$out"
+
 	# If the bamDir is empty, then the user must have supplied -I bam files
 	if [ -z "$bamDir" ]; then
 		for bam in "${bams[@]}"; do
@@ -81,9 +83,11 @@ check_files() {
 	else
 		# The user must have supplied a bam directory
 		bamsString=""
+		i=0
 		for file in $bamDir/*.bam; do
 			if [ -f "$file" ]; then
-				bamsString+=" -I $file "
+				i=$i+1
+				bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$i -I $file\n"
 			fi
 		done
 		if [ -z "$bamsString" ]; then
@@ -113,8 +117,10 @@ check_files() {
 list_bams() {
 	if [ -z "$bamDir" ]; then
 		bamsString=""
+		i=0
 		for bam in "${bams[@]}"; do
-			bamsString+=" -I $bam "
+			i=$i+1
+			bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$i -I $bam \n"
 		done
 	fi
 }
@@ -140,7 +146,7 @@ module load vcftools/0.1.14.10
 $gatk SelectVariants --restrict-alleles-to BIALLELIC -R $ref -V $vcf -O biallelic.vcf --select-type-to-include SNP
 
 # Do the actual ASE Read Counting
-$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out $bamsString
+$bamsString
 " > ase_count.pbs
 }
 
