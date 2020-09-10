@@ -15,7 +15,7 @@ usage () {
 		-O name of output directory of output tables (default: output_table)
 		-N Name of Job
 		-l memory
-		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=10:00:00)
+		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=60:00:00)
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
 		-o name of the job's outputfile
