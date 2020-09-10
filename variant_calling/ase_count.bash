@@ -15,7 +15,7 @@ usage () {
 		-O name of output directory of output tables (default: output_table)
 		-N Name of Job
 		-l memory
-		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=60:00:00)
+		-t hh:mm:ss time needed, job will be killed if exceeded (default: walltime=80:00:00)
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
 		-o name of the job's outputfile
@@ -44,7 +44,7 @@ get_input() {
 	out="output_table"
 	name="ase_count"
 	memory="mem=16gb"
-	time="walltime=40:00:00"
+	time="walltime=80:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="ase_count.out"
