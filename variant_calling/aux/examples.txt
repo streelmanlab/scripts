@@ -32,8 +32,10 @@ python filter_vcf.py ~/scratch/ts_ms/no_1615_1621_1984_08_31_20/var_fix_lg.vcf ~
 cat var_fix.txt sig_bin.txt | sort | uniq > var_fix_sig_bin_25kb_genes.txt
 
 # ASE (after ase_count.bash)
-# 1. Use snpEff to find closest genes
-# 2. 
+# 1. Convert Scaffolds
+# 2. Use snpEff to find closest genes
 
 # 1
+python ~/scratch/brain/brain_scripts/convert_scaffolds.py output.table.SRR5440906 output.table.SRR5440906.lg -n -p
+# 2
 java -jar snpEff.jar closest Mzebra_% /nv/hp10/ggruenhagen3/scratch/ase/scripts/variant_calling/output_table/output.table.SRR5440906.lg > /nv/hp10/ggruenhagen3/scratch/ase/scripts/variant_calling/output_table/output.table.SRR5440906.lg.closest
