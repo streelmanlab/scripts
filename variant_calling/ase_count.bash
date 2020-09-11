@@ -87,7 +87,9 @@ check_files() {
 		for file in $bamDir/*.bam; do
 			if [ -f "$file" ]; then
 				((i=i+1))
-				bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$i -I $file "$'\n'
+				filename=$(basename -- "$file")
+				no_ext="${filename%.*}"
+				bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$no_ext -I $file "$'\n'
 			fi
 		done
 		if [ -z "$bamsString" ]; then
@@ -120,7 +122,9 @@ list_bams() {
 		i=0
 		for bam in "${bams[@]}"; do
 			((i=i+1))
-			bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$i -I $bam "$'\n'
+			filename=$(basename -- "$file")
+			no_ext="${filename%.*}"
+			bamsString+="$gatk ASEReadCounter -R $ref -V biallelic.vcf -O $out/output.table.$no_ext -I $bam "$'\n'
 		done
 	fi
 }
