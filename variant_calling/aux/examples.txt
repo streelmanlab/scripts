@@ -24,9 +24,16 @@ awk '{OFS="\t"} { if ($3 ~ /^[0-9]+$/ && $3 > 0.99) {print $1,$2,$2,$3} }' snp_n
 awk '{OFS="\t"} { if ($3 ~ /^[0-9]+$/ && $3 > 0.99) {print $1,$2,$2,$3} }' indel_no_window.fst > indel_fix.bed
 cat snp_fix.bed indel_fix.bed > var_fix.bed
 
-#4
+# 4
 bedtools intersect -wa -a vcf_lg.bed -b var_fix.bed > var_fix_lg.vcf
 
 # 5
 python filter_vcf.py ~/scratch/ts_ms/no_1615_1621_1984_08_31_20/var_fix_lg.vcf ~/scratch/bin/snpEff/Mzebra_% var_fix.txt -e -c 8
 cat var_fix.txt sig_bin.txt | sort | uniq > var_fix_sig_bin_25kb_genes.txt
+
+# ASE (after ase_count.bash)
+# 1. Use snpEff to find closest genes
+# 2. 
+
+# 1
+java -jar snpEff.jar closest Mzebra_% /nv/hp10/ggruenhagen3/scratch/ase/scripts/variant_calling/output_table/output.table.SRR5440906.lg > /nv/hp10/ggruenhagen3/scratch/ase/scripts/variant_calling/output_table/output.table.SRR5440906.lg.closest
