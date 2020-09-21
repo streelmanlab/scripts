@@ -1,6 +1,6 @@
 # Scripts used in variant calling
 ## Introduction:
-These scripts can be used to auto-generate and call pbs scripts on Georgia Tech's PACE server. The scripts contained in this folder are used to call variants. The input to the start of this pipeline are fastq files and the output is a vcf file.
+These scripts can be used to auto-generate and call pbs scripts on Georgia Tech's PACE server. The scripts contained in this folder are used to call variants. The input to the start of this pipeline are fastq files and the output is a vcf file. For examples, see this file scripts/variant_calling/aux/examples.txt
 
 For scripts that require file paths to a binary, please provide the full path (including the binary in the path).
 
