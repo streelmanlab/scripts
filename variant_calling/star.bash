@@ -119,7 +119,7 @@ $createRefStr
 
 # Align Reads
 STAR --genomeDir $gdir --readFilesIn $fastq1 $fastq2 --outFileNamePrefix $out --outSAMtype BAM SortedByCoordinate --clip5pNbases 6
-samtools view -bS $out"".sam > $out"".bam       #Converts to BAM" > star.pbs
+" > star.pbs
 }
 
 main() {
