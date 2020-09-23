@@ -87,7 +87,7 @@ check_files() {
 
 	createRefStr=""
 	if [ -z "$(ls -A $gdir)" ]; then
-		$createRefStr="STAR --runMode genomeGenerate --genomeDir $gdir --genomeFastaFiles $ref"
+		createRefStr="STAR --runMode genomeGenerate --genomeDir $gdir --genomeFastaFiles $ref"
 	fi
 	
 	if [ -z "$out" ]; then
