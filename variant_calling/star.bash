@@ -8,7 +8,7 @@ usage () {
         echo "Usage: star.bash filtered_fastq_1 filtered_fastq_2 reference refDir outputiPrefix [options]
 		-N Name of Job
 		-l memory
-		-t hh:mm:ss time needed, job will be killed if exceeded
+		-it hh:mm:ss time needed, job will be killed if exceeded (default=walltime=60:00:00)
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
 		-o name of the job's outputfile
@@ -39,7 +39,7 @@ get_input() {
 	shift
 	name="$out"
 	memory="mem=128gb"
-	time="walltime=40:00:00"
+	time="walltime=60:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="$out"".out"
