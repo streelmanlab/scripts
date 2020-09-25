@@ -5,7 +5,13 @@
 
 #Usage statement
 usage () {
-        echo "Usage: star.bash filtered_fastq_1 filtered_fastq_2 reference refDir outputiPrefix [options]
+        echo "Usage: star.bash filtered_fastq_1 filtered_fastq_2 reference refDir outputPrefix [options]
+		filtered_fastq_1: filtered fastq file 1
+		filtered_fastq_2: filtered fastq file 2
+		reference: reference fasta file
+		refDir: STAR reference directory (if empty, a reference will be created)
+		outputPrefix: prefix for output files
+
 		-N Name of Job
 		-l memory
 		-it hh:mm:ss time needed, job will be killed if exceeded (default=walltime=60:00:00)
