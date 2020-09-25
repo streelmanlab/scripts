@@ -108,7 +108,7 @@ module load intel/14.0.2
 module load perl/5.14.2
 module load vcftools/0.1.14.10
 module load anaconda3
-conda activate seurat
+conda activate /nv/hp10/ggruenhagen3/data/conda_envs/seurat
 
 # Purpose: Remove allelic bias where the alt allele has at least 1 mismatch
 # Keep only SNPs, mask reference at SNPs, 
