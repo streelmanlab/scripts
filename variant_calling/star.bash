@@ -53,7 +53,7 @@ get_input() {
 	outputFile="$out"".out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "C:N:l:t:q:j:o:m:M:h" opt; do
+	while getopts "CN:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
 		C ) count=" --quantMode GeneCounts" ;;
 		N ) name=$OPTARG ;;
