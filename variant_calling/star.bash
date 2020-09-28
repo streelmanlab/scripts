@@ -11,10 +11,11 @@ usage () {
 		reference: reference fasta file
 		refDir: STAR reference directory (if empty, a reference will be created)
 		outputPrefix: prefix for output files
-
+		
+		-C count mode
 		-N Name of Job
 		-l memory
-		-it hh:mm:ss time needed, job will be killed if exceeded (default=walltime=60:00:00)
+		-t hh:mm:ss time needed, job will be killed if exceeded (default=walltime=60:00:00)
 		-q specifies process queue
 		-j controls what gets written to the ouputfile
 		-o name of the job's outputfile
@@ -43,6 +44,7 @@ get_input() {
 	shift
 	shift
 	shift
+	count=""
 	name="$out"
 	memory="mem=128gb"
 	time="walltime=60:00:00"
@@ -51,8 +53,9 @@ get_input() {
 	outputFile="$out"".out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:t:q:j:o:m:M:h" opt; do
+	while getopts "C:N:l:t:q:j:o:m:M:h" opt; do
 		case $opt in
+		C ) count=" --quantMode GeneCounts" ;;
 		N ) name=$OPTARG ;;
 		l ) memory=$OPTARG ;;
 		t ) time=$OPTARG ;;
@@ -124,7 +127,7 @@ module load samtools      #   loads samtools package
 $createRefStr
 
 # Align Reads
-STAR --genomeDir $gdir --readFilesIn $fastq1 $fastq2 --outFileNamePrefix $out --outSAMtype BAM SortedByCoordinate --clip5pNbases 6
+STAR --genomeDir $gdir --readFilesIn $fastq1 $fastq2 --outFileNamePrefix $out --outSAMtype BAM SortedByCoordinate --clip5pNbases 6 $count
 " > star.pbs
 }
 
