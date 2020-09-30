@@ -33,7 +33,7 @@ Download [ASEr](https://github.com/TheFraserLab/ASEr). Follow their instructions
 
 This follows the same steps as above with an additional first step and last step. The additional first step is to mask the reference genome at sites of heterozygous SNPs. The point of doing this and the realigning everything is to remove allelic imbalance. The alt allele will always have a lower mapping score than the reference allele if the reference genome is not masked. The additional last step is to calculate read counts per allele, the output from this will be used in R.
 
-It is ideal to use ```ase_count.bash``` on each sample individual, so that ASE can be analyzed by individual later on.
+When using ```ase_count.bash``` the reference should be the un-masked reference, otherwise the reference allele would always be N.
 ```
 bash prepare_ref_ase.bash <reference> <ASEr_file_path> [options]
 
