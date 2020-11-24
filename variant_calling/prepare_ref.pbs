@@ -1,0 +1,18 @@
+#PBS -A GT-js585
+#PBS -N prepare_ref
+#PBS -l mem=8gb
+#PBS -l nodes=2:ppn=4
+#PBS -l walltime=40:00:00
+#PBS -j oe
+#PBS -o prepare_ref.out
+#PBS -m abe
+#PBS -M ggruenhagen3@gatech.edu
+
+cd $PBS_O_WORKDIR
+/storage/home/hcoda1/6/ggruenhagen3/p-js585-0/George/rich_project_pb1/bin//gatk-4.1.8.1/gatk CreateSequenceDictionary -R /storage/home/hcoda1/6/ggruenhagen3/scratch/m_zebra_ref/M_zebra_UMD2a.fasta
+
+module load samtools/1.9
+samtools faidx /storage/home/hcoda1/6/ggruenhagen3/scratch/m_zebra_ref/M_zebra_UMD2a.fasta
+
+module load bwa/0.7.17
+bwa index -a bwtsw /storage/home/hcoda1/6/ggruenhagen3/scratch/m_zebra_ref/M_zebra_UMD2a.fasta
