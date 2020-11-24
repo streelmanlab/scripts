@@ -55,7 +55,7 @@ get_input() {
 	name="variant calling"
 	memory="mem=128gb"
 	cores="nodes=1:ppn=1"
-	time="walltime=80:00:00"
+	time="walltime=10:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputDir="logs"
@@ -169,21 +169,20 @@ generate_xl_jobs() {
 
 generate_multi_pbs() {
 	echo $time
-	echo '#PBS -N multi-paralleljob
-#PBS -q biocluster-6 
+	echo '#PBS -A GT-js585
+#PBS -N haplocalling.$PBS_JOBID
 #PBS -l '"$time"'
 #PBS -l nodes=4:ppn=8
 #PBS -j oe
 #PBS -o '"$outputDir"'/out.$PBS_JOBID
-
+#PBS -m abe
+#PBS -M gwg@gatech.edu
 
 cd $PBS_O_WORKDIR
 NP=$(wc -l < $PBS_NODEFILE)
-ls ../bin/gatk-4.0.11.0
 
 # add all modules needed here
-module load java/1.8.0_25
-module load gnuparallel/20150422
+module load parallel
 
 #JOBFILE, BATCHSIZE, and BATCHNUM should be set in the environment
 #If they are not, use some defaults.
@@ -216,7 +215,8 @@ fi
 
 BATCHSIZE=${REMAININGJOBCOUNT:-$BATCHSIZE}
 
-head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | /usr/local/pacerepov1/gnuparallel/20110822/bin/parallel -j $NP -k 
+head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | parallel -j $NP -k 
+#head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | cat -j $NP -k
 ' > paralleljob.txt
 }
 
