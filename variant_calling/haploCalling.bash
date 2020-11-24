@@ -55,7 +55,7 @@ get_input() {
 	name="variant calling"
 	memory="mem=128gb"
 	cores="nodes=1:ppn=1"
-	time="walltime=10:00:00"
+	time="walltime=60:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputDir="logs"
