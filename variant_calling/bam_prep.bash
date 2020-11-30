@@ -71,11 +71,11 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -N $name
+	echo "#PBS -A GT-js585-biocluster
+#PBS -N $name
 #PBS -l $memory
 #PBS -l nodes=2:ppn=4
 #PBS -l $time
-#PBS -q $cluster
 #PBS -j $writingOpts
 #PBS -o $outputFile
 #PBS -m $emailOpts
