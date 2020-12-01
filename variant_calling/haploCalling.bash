@@ -169,7 +169,7 @@ generate_xl_jobs() {
 
 generate_multi_pbs() {
 	echo $time
-	echo '#PBS -A GT-js585
+	echo '#PBS -A GT-js585-biocluster
 #PBS -N haplocalling.$PBS_JOBID
 #PBS -l '"$time"'
 #PBS -l nodes=4:ppn=8
