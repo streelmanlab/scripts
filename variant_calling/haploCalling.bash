@@ -18,7 +18,8 @@ usage () {
 	-X intervals to exclude
 	-P run with intervals and again without excluding intervals
 	-B batch size: how many jobs run together (default: 32)
-	
+	-C is the bam from cellranger? If it is, a filter needs to be removed bc cellranger has a different definition of MAPQ 255 than gatk. 
+
 	PBS Options:
 	-N Name of Job
 	-l memory (default: mem=128gb)
@@ -52,6 +53,7 @@ get_input() {
 	intList=""
 	exList=""
 	bothList=""
+	disableFilter=false
 	name="variant calling"
 	memory="mem=128gb"
 	cores="nodes=1:ppn=1"
@@ -61,7 +63,7 @@ get_input() {
 	outputDir="logs"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "I:D:O:S:N:L:X:P:B:l:t:q:j:o:m:M:c:h" opt; do
+	while getopts "I:D:O:S:N:L:X:P:B:C:l:t:q:j:o:m:M:c:h" opt; do
 		case $opt in
 		I ) bams+=("$OPTARG");;
 		D ) bamDir=$OPTARG;;
@@ -72,6 +74,7 @@ get_input() {
 		X ) exList=$OPTARG;;
 		P ) bothList=$OPTARG;;
 		B ) batch_size=$OPTARG;;
+		C ) disableFilter=true;;
 		l ) memory=$OPTARG;;
 		t ) time=$OPTARG;;
 		q ) cluster=$OPTARG ;;
@@ -130,6 +133,12 @@ check_files() {
 		usage
 		exit 1
 	fi
+	
+	filterStr=""
+	if [ "$disableFilter" ]; then
+		filterStr="--disable-read-filter MappingQualityAvailableReadFilter"
+	fi
+		
 }
 
 list_bams() {
@@ -145,7 +154,7 @@ generate_jobs() {
 	echo -n "" > jobs.txt
 	k=0
 	while read line; do
-		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/out$k"".vcf -L \"$line\"" >> jobs.txt
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $filterStr $bamsString -stand-call-conf $minPhred -O $gatkOut/out$k"".vcf -L \"$line\"" >> jobs.txt
 		k=$((k+1))
 	done < $list
 }
@@ -157,13 +166,13 @@ generate_xl_jobs() {
 		awk 'BEGIN {OFS="\t"} { p=index($0,":"); pos=substr($0,p+1);chrom=substr($0, 0,p-1); dash=index(pos,"-"); start=substr(pos,0,dash-1); stop=substr(pos,dash+1); print chrom, start, stop }' $bothList > pos.bed
 		
 		# Append the unplaced contig job at the end of all the chromosome jobs
-		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" >> jobs.txt
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $filterStr $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" >> jobs.txt
 	else
 		# Convert from chr1:1-100 format to bed format (separated by tabs)
 		awk 'BEGIN {OFS="\t"} { p=index($0,":"); pos=substr($0,p+1);chrom=substr($0, 0,p-1); dash=index(pos,"-"); start=substr(pos,0,dash-1); stop=substr(pos,dash+1); print chrom, start, stop }' $exList > pos.bed
 		
 		# Unplaced contigs are the only jobs, make a new file
-		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref  $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" > jobs.txt
+		echo "$gatk --java-options \"-Xmx4g\" HaplotypeCaller -R $ref $filterStr $bamsString -stand-call-conf $minPhred -O $gatkOut/xl"".vcf -XL pos.bed" > jobs.txt
 	fi
 }
 
