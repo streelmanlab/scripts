@@ -5,6 +5,7 @@ These scripts can be used to auto-generate and call pbs scripts on Georgia Tech'
 For scripts that require file paths to a binary, please provide the full path (including the binary in the path).
 
 ## Variant Calling:
+Dowload [NGSQC](https://github.com/xunchen85/VIcaller/blob/master/Tools/NGSQCToolkit_v2.3.3.zip)
 ```
 bash filter_fastq.bash <fastq_1> <fastq_2> [options]
 ```
