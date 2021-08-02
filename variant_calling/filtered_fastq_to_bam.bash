@@ -85,11 +85,10 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -N $name
+	echo "#PBS -A GT-js585-biocluster
 #PBS -l $memory
 #PBS -l nodes=2:ppn=4
 #PBS -l $time
-#PBS -q $cluster
 #PBS -j $writingOpts
 #PBS -o $outputFile
 #PBS -m $emailOpts
@@ -97,9 +96,9 @@ generate_pbs() {
 
 cd \$PBS_O_WORKDIR
 module purge
-module load open64/4.5.1
-module load bwa/0.7.4     #loads bwa package
-module load samtools      #   loads samtools package
+module load anaconda3
+module load bwa/0.7.17
+conda activate r4
 bwa mem -M $ref $fastq1 $fastq2 > $out"".sam     #creates the SAM
 samtools view -bS $out"".sam > $out       #Converts to BAM" > filtered_fastq_to_bam.pbs
 }
