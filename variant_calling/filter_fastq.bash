@@ -71,17 +71,18 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -N $name
+	echo "#PBS -A GT-js585-biocluster 
 #PBS -l nodes=2:ppn=4
 #PBS -l $memory
 #PBS -l $time
-#PBS -q $cluster
 #PBS -j $writingOpts
 #PBS -o $outputFile
 #PBS -m $emailOpts
 #PBS -M $email
 cd \$PBS_O_WORKDIR
 module load ngsqc_toolkit/2.3.3/
+module load anaconda3
+conda activate r4
 IlluQC.pl -pe $fastq1 $fastq2 N A" > filter_fastq.pbs
 }
 
