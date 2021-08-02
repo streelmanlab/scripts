@@ -70,25 +70,23 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -N $name
+	echo "#PBS -A GT-js585-biocluster
+#PBS -N $name
 #PBS -l $memory
 #PBS -l nodes=2:ppn=4
 #PBS -l $time
-#PBS -q $cluster
 #PBS -j $writingOpts
 #PBS -o $outputFile
 #PBS -m $emailOpts
 #PBS -M $email
 
 cd \$PBS_O_WORKDIR
-module load java/1.8.0_25
 $gatk CreateSequenceDictionary -R $ref
 
-module load samtools/0.1.19
 samtools faidx $ref
 
 module load open64/4.5.1
-module load bwa/0.7.4
+module load bwa/0.7.17
 bwa index -a bwtsw $ref" > prepare_ref.pbs
 }
 
