@@ -23,5 +23,7 @@ The output file called demux_out.best (or if you're using a different basename, 
 ### Without Genotype Information (souporcell)
 Souporcell will categorize cells into groups based on the profile of SNPs in their reads. These groups or clusters represent inviduals. However, without genotyping information, we cannot say which group represents which individual. 
 ```
+bash filter_cr_bam.bash <cell_raw_bam> <reference> [options]
 soup.bash <cell_bam> <reference> <gatk> <barcodes> <soup_py> <num_individuals> [options]
 ```
+The output file called soup_out_pred.tsv (or if you're using a different basename, the output file called *_pred.tsv) contains the ___. In addition, the output file called soup_out_dbl.tsv contains information on doublets in the data.
