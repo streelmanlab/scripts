@@ -5,13 +5,14 @@
 
 #Usage statement
 usage () {
-        echo "Usage: bash soup.bash <cell_bam> <reference> <gatk> <barcodes> <soup_py> [options]
+        echo "Usage: bash soup.bash <cell_bam> <reference> <gatk> <barcodes> <soup_py> <num_individuals> [options]
 		
 		cell_bam: bam file of reads from cells/nuclei (filtered to keep only good reads)
 		reference: reference genome file
 		gatk: gatk binary
 		barcodes: barcodes.tsv.gz from cellranger
 		soup_py: souporcell.py file
+		num_individuals: number of individuals in the pool
 
 		-O basename for output souporcell files (default: soup_out)
 		-N Name of Job
@@ -34,7 +35,15 @@ get_input() {
 	check_for_help "$1"
 	
 	cell_bam=$1	
-	gt_vcf=$2
+	reference=$2
+	gatk=$3
+	barcodes=$4
+	soup_py=$5
+	num_individuals=$6
+	shift
+	shift
+	shift
+	shift
 	shift
 	shift
 
@@ -63,12 +72,27 @@ get_input() {
 
 check_files() {
 	if [ -z "$cell_bam" ]; then
-		echo "The file does not exist: $cell_bam"
+		echo "The bam file does not exist: $cell_bam"
 		usage
 		exit 1
 	fi
         if [ -z "$reference" ]; then
-                echo "The reference file does not exist: $gt_vcf"
+                echo "The reference file does not exist: $reference"
+                usage
+                exit 1
+        fi
+        if [ -z "$gatk" ]; then
+                echo "Cannot find gatk: $gatk"
+                usage
+                exit 1
+        fi
+        if [ -z "$barcodes" ]; then
+                echo "Cannot find the barcodes file: $barcodes"
+                usage
+                exit 1
+        fi
+        if [ -z "$soup_py" ]; then
+                echo "Cannot find souporcell.py: $soup_py"
                 usage
                 exit 1
         fi
@@ -88,7 +112,7 @@ generate_pbs() {
 cd \$PBS_O_WORKDIR
 
 # Call Variants
-gunzip -c filtered_feature_bc_matrix/barcodes.tsv.gz > barcodes.txt
+gunzip -c $barcodes > barcodes.txt
 /storage/home/hcoda1/6/ggruenhagen3/p-js585-0/George/rich_project_pb1/bin//gatk-4.1.8.1/gatk --java-options "-Xmx4g" HaplotypeCaller -R $reference --disable-read-filter MappingQualityAvailableReadFilter -I $cell_bam  -stand-call-conf 30 -O sample.vcf
 
 # Make alt and ref matrices
@@ -96,7 +120,7 @@ vartrix --umi --mapq 30 -b $cell_bam -c barcodes.txt --scoring-method coverage -
 
 # Call Cells
 echo "\nUsing souporcell to assign cells (Loial)\n"
-python $soup_py --alt_matrix soup_alt.mtx --barcodes barcodes.txt --num_clusters 4 --ref_matrix soup_ref.mtx -o $out""_pred.tsv -t 24
+python $soup_py --alt_matrix soup_alt.mtx --barcodes barcodes.txt --num_clusters $num_individuals --ref_matrix soup_ref.mtx -o $out""_pred.tsv -t 24
 
 # Call Doublets
 echo "\nUsing troublet to assign doublets (Loial)\n"
