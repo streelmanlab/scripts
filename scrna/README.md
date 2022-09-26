@@ -2,6 +2,7 @@
 ## Introduction:
 
 ## Splitting pools of individuals into single indviduals
+### With Genotype Information (demuxlet)
 Variants from genotyped inviduals will be searched for in reads from cells/nuclei. First, the reads from ```cellranger counts``` need to be filtered out to keep the confidently mapped reads that cellranger actually uses.
 ```
 bash filter_cr_bam.bash <cell_raw_bam> <reference> [options]
@@ -16,4 +17,11 @@ grep -v "^#" new_b1_bi.vcf | ./edit_vcf_4.awk >> new_b1_for_demux.vcf
 Now, it's time to run demuxlet.
 ```
 bash demuxlet.bash <cell_bam> <gt_vcf> [options]
+```
+The output file called demux_out.best (or if you're using a different basename, the output file called *.best) contains a columned called 'SNG.1ST', which is the most probable individual.
+
+### Without Genotype Information (souporcell)
+Souporcell will categorize cells into groups based on the profile of SNPs in their reads. These groups or clusters represent inviduals. However, without genotyping information, we cannot say which group represents which individual. 
+```
+soup.bash <cell_bam> <reference> <gatk> <barcodes> <soup_py> <num_individuals> [options]
 ```
