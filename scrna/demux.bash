@@ -40,7 +40,7 @@ get_input() {
 	memory="mem=64gb"
 	time="walltime=1:00:00"
 	writingOpts="oe"
-	outputFile="demux_out.out"
+	outputFile="demux.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
 	while getopts "O:N:l:t:j:o:m:M:h" opt; do
@@ -60,7 +60,7 @@ get_input() {
 
 check_files() {
 	if [ -z "$cell_bam" ]; then
-		echo "The vcf file does not exist: $cell_bam"
+		echo "The bam file does not exist: $cell_bam"
 		usage
 		exit 1
 	fi
