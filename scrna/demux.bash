@@ -5,9 +5,9 @@
 
 #Usage statement
 usage () {
-        echo "Usage: bash demux.bash <cell_vcf> <gt_vcf> [options]
+        echo "Usage: bash demux.bash <cell_bam> <gt_vcf> [options]
 		
-		cell_vcf: vcf file originating from reads in cells/nuclei
+		cell_bam: bam file of reads from cells/nuclei (filtered to keep only good reads)
 		gt_vcf:   vcf file originating from genotyped individuals
 		
 		-O basename for output demuxlet files (default: demux_out)
@@ -30,7 +30,7 @@ check_for_help() {
 get_input() {
 	check_for_help "$1"
 	
-	cell_vcf=$1
+	cell_bam=$1	
 	gt_vcf=$2
 	shift
 	shift
@@ -59,8 +59,8 @@ get_input() {
 }
 
 check_files() {
-	if [ -z "$cell_vcf" ]; then
-		echo "The vcf file does not exist: $cell_vcf"
+	if [ -z "$cell_bam" ]; then
+		echo "The vcf file does not exist: $cell_bam"
 		usage
 		exit 1
 	fi
@@ -84,10 +84,7 @@ generate_pbs() {
 
 cd \$PBS_O_WORKDIR
 
-bgzip $vcf
-tabix -p vcf $vcf"".gz
-
-vcftools --gzvcf $vcf"".gz --max-missing 0.""$perct --recode --out filter_$perct
+demuxlet --sam $cell_bam --vcf $gt_vcf --out $out --field GT
 " > demux.pbs
 }
 
