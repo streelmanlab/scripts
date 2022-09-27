@@ -16,7 +16,7 @@ grep -v "^#" new_b1_bi.vcf | ./edit_vcf_4.awk >> new_b1_for_demux.vcf
 ```
 Now, it's time to run demuxlet.
 ```
-bash demuxlet.bash <cell_bam> <gt_vcf> [options]
+bash demux.bash <cell_bam> <gt_vcf> [options]
 ```
 The output file called demux_out.best (or if you're using a different basename, the output file called *.best) contains a columned called 'SNG.1ST', which is the most probable individual.
 
