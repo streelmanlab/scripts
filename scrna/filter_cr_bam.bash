@@ -11,7 +11,7 @@ usage () {
 		reference: reference genome	
 		
 		-N Name of Job
-		-t hh:mm:ss time needed, job will be killed if exceeded (default walltime: 40:00:00)
+		-t hh:mm:ss time needed, job will be killed if exceeded (default walltime: 4:00:00)
 		-j controls what gets written to the ouputfile
 		-o name of the job's outputfile
 		-m controls when email is sent to the submitter
@@ -36,7 +36,7 @@ get_input() {
 
 	name="filter_cr_bam"
 	memory="mem=64gb"
-	time="walltime=40:00:00"
+	time="walltime=4:00:00"
 	writingOpts="oe"
 	outputFile="filter_cr_bam.out"
 	emailOpts="abe"
@@ -80,19 +80,26 @@ generate_pbs() {
 #PBS -M $email
 
 cd \$PBS_O_WORKDIR
+module load anaconda3
+conda activate r4
 
 # Subset good quality reads
-echo "\nSubset good quality reads (Loial)\n"
+echo '\nSubset good quality reads (George)\n'
 samtools view -S -b -q 10 -F 3844 $cell_raw_bam > filtered_qc.bam
 samtools view filtered_qc.bam > filtered_qc.sam
-grep "xf:i:25" filtered_qc.sam > filtered_qc_cr.sam
+grep 'xf:i:25' filtered_qc.sam > filtered_qc_cr.sam
+
+# Keep only cells that Cellranger keeps
+cp barcodes.txt filter.txt
+sed -i -e 's/^/CB:Z:/' filter.txt
+cat filtered_qc_cr.sam | LC_ALL=C grep -F -f filter.txt > filtered_qc_cr_cell.sam
 
 # Prep the BAM file for Variant Calling
-echo "\nPrep the BAM file for Variant Calling (Loial)\n"
-samtools view -bT $reference filtered_qc_cr.sam > filtered_qc_cr.bam
-samtools reheader possorted_genome_bam.bam filtered_qc_cr.bam > filtered_qc_cr_header.bam
-samtools sort filtered_qc_cr_header.bam > filtered_qc_cr_header_sort.bam
-mv filtered_qc_cr_header_sort.bam filtered_final.bam
+echo '\nPrep the BAM file for Variant Calling (George)\n'
+samtools view -bT $reference filtered_qc_cr_cell.sam > filtered_qc_cr_cell.bam
+samtools reheader possorted_genome_bam.bam filtered_qc_cr_cell.bam > filtered_qc_cr_cell_header.bam
+samtools sort filtered_qc_cr_cell_header.bam -@ 24 > filtered_qc_cr_cell_header_sort.bam
+mv filtered_qc_cr_cell_header_sort.bam filtered_final.bam
 samtools index filtered_final.bam
 
 " > filter_cr_bam.pbs
