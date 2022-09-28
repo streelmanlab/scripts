@@ -13,7 +13,8 @@ usage () {
 		barcodes: barcodes.tsv.gz from cellranger
 		soup_py: souporcell.py file
 		num_individuals: number of individuals in the pool
-
+		
+		-V vcf from cells/nuclei if you have it (will skip the variant calling step)
 		-O basename for output souporcell files (default: soup_out)
 		-N Name of Job
 		-t hh:mm:ss time needed, job will be killed if exceeded (default walltime: 72:00:00)
@@ -110,21 +111,27 @@ generate_pbs() {
 #PBS -M $email
 
 cd \$PBS_O_WORKDIR
+module load anaconda3
+conda activate souporcell
 
 # Call Variants
 gunzip -c $barcodes > barcodes.txt
-/storage/home/hcoda1/6/ggruenhagen3/p-js585-0/George/rich_project_pb1/bin//gatk-4.1.8.1/gatk --java-options "-Xmx4g" HaplotypeCaller -R $reference --disable-read-filter MappingQualityAvailableReadFilter -I $cell_bam  -stand-call-conf 30 -O sample.vcf
+/storage/home/hcoda1/6/ggruenhagen3/p-js585-0/George/rich_project_pb1/bin//gatk-4.1.8.1/gatk --java-options '-Xmx4g' HaplotypeCaller -R $reference --disable-read-filter MappingQualityAvailableReadFilter -I $cell_bam  -stand-call-conf 30 -O sample.vcf
 
 # Make alt and ref matrices
+rm -f soup_alt.mtx
+rm -f soup_ref.mtx
 vartrix --umi --mapq 30 -b $cell_bam -c barcodes.txt --scoring-method coverage --threads 24 --ref-matrix soup_ref.mtx --out-matrix soup_alt.mtx -v sample.vcf --fasta $reference
 
 # Call Cells
-echo "\nUsing souporcell to assign cells (Loial)\n"
+echo '\nUsing souporcell to assign cells (George)\n'
+rm -f $out""_pred.tsv
 python $soup_py --alt_matrix soup_alt.mtx --barcodes barcodes.txt --num_clusters $num_individuals --ref_matrix soup_ref.mtx -o $out""_pred.tsv -t 24
 
 # Call Doublets
-echo "\nUsing troublet to assign doublets (Loial)\n"
-troublet --alts soup_alt.mtx --clusters soup_pred.tsv -r soup_ref.mtx > $out""_dbl.tsv
+echo '\nUsing troublet to assign doublets (George)\n'
+rm -f $out""_dbl.tsv
+troublet --alts soup_alt.mtx --clusters $out""_pred.tsv -r soup_ref.mtx > $out""_dbl.tsv
 
 " > soup.pbs
 }
