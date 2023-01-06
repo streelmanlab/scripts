@@ -1,6 +1,11 @@
 # Scripts used for single cell/nuclei RNA-seq analysis
 ## Introduction:
 
+## Choosing the optimal clustering paramaters in Seurat (ChooseR)
+[ChooseR](https://github.com/rbpatt2019/chooseR) performs clustering at multiple resolutions and finds the optimal resolution that results in the highest number of clusters while the median silhoutte score of bootstraps is still high. I have modified the code to follow this same logic for multiple clustering parameters, not just resolution. Additionally, I modified it to do follow the clustering workflow we use in the Streelmanlab.
+
+The first step is to use renv as described in ChooseR's [github](https://github.com/rbpatt2019/chooseR). I believe this creates a local R environment in the working directory.
+
 ## Splitting pools of individuals into single indviduals
 ### With Genotype Information (demuxlet)
 Variants from genotyped inviduals will be searched for in reads from cells/nuclei. First, the reads from ```cellranger counts``` need to be filtered out to keep the confidently mapped reads that cellranger actually uses.
