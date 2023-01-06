@@ -2,9 +2,9 @@
 ## Introduction:
 
 ## Choosing the optimal clustering paramaters in Seurat (ChooseR)
-[ChooseR](https://github.com/rbpatt2019/chooseR) performs clustering at multiple resolutions and finds the optimal resolution that results in the highest number of clusters while the median silhoutte score of bootstraps is still high. I have modified the code to follow this same logic for multiple clustering parameters, not just resolution. Additionally, I modified it to do follow the clustering workflow we use in the Streelmanlab.
+[ChooseR](https://github.com/rbpatt2019/chooseR) performs clustering at multiple resolutions and finds the optimal resolution that results in the highest number of clusters while the median silhoutte score of bootstraps is still high. I have modified the code to follow this same logic for multiple clustering parameters, not just resolution. The additional parameters that my code will evaulate are min.dist in Seurat's RunUMAP and k.param (n.neighbors) in Seurat's FindNeighbors. Additionally, I modified it to do follow the clustering workflow we use in the Streelmanlab.
 
-The first step is to use renv as described in ChooseR's [github](https://github.com/rbpatt2019/chooseR). I believe this creates a local R environment in the working directory.
+The first step is to use renv as described in ChooseR's [github](https://github.com/rbpatt2019/chooseR). I believe this creates a local R environment in the working directory. Next, modify the line in hb_chooseR.R that loads a Seurat object, to load the correct object that you want. Also modify the results path to be what you want. Next call ```bash hb_params.bash```, which will find all the combos of min.dist and n.neighbors, then it will create job scripts for each combo that calls hb_chooseR.R. Then, hb_chooseR.R will do clustering with bootstraps on multiple resolutions using the values of min.dist and n.neighbors it was given. It will save clustering results to intermediate rds files in some directories. When all jobs are complete, run ```hb_chooser_collect.R``` to read those results from the rds files and see which clustering parameters are optimal. Note that you will probably have to modify the paths in hb_chooser_collect.R.
 
 ## Splitting pools of individuals into single indviduals
 ### With Genotype Information (demuxlet)
