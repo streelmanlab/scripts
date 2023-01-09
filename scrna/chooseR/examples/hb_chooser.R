@@ -93,7 +93,7 @@ pipeline_part2 = function(res) {
 pipeline_part3 = function(res) {
   this.str = paste0("X", batch_num, "_", min_dist, "_", n_neighbors, "_res.", res)
   mtchs    = readRDS(paste0(results_path, "mtchs_", this.str, ".rds"))
-  clusters = readRDS(paste0(results_path, "results_", this.str, ".rds"))
+  clusters = readRDS(paste0(results_path, "clusters_", this.str, ".rds"))
   
   # Now calculate silhouette scores
   message(paste0("Silhouette ", res, "..."))
