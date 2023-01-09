@@ -1,6 +1,6 @@
 # Functions used directly in the analysis and example script
-
-source("/storage/home/hcoda1/6/ggruenhagen3/scratch/brain/chooser/my/cluster.stability/R/helper_functions.R")
+this.script.dir <- dirname(sys.frame(1)$ofile)
+source(paste0(this.script.dir, "/helper_functions.R"))
 `%>%` <- magrittr::`%>%`
 
 #' Run multiple clusters on the same Seurat Object

@@ -41,7 +41,9 @@ find_clusters <- function(obj,
                           min.dist = 0.5,
                           n.neighbors = 50) {
   # I added the min.dist and n.neighbors parameters
-  obj = SCTransform(obj, vars.to.regress = "sample", verbose = F)
+  raw.assay = ifelse("Spatial" %in% names(obj@assays), "Spatial", "RNA")
+  obj = SCTransform(obj, assay = raw.assay, vars.to.regress = "sample", verbose = F)
+  obj@active.assay = assay 
   obj = RunPCA(obj, dim = 50, verbose = F)
   obj = RunUMAP(obj, dims=1:50, min.dist=min.dist, spread=1, n.neighbors=n.neighbors, n.epochs=1000, metric = "euclidean")
   this.graph.name = paste0("X", paste(batch.num, min.dist, n.neighbors, sep = "_"))

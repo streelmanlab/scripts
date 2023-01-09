@@ -20,24 +20,25 @@ generate_pbs() {
 	min_dist_str=${min_dist//./}
 	#n_neighbors=${n_neighbors//./_}
 
-	pbs_str="pbs_$min_dist_str""_$n_neighbors"".pbs"
+	pbs_str="pbs_$min_dist_str""_$n_neighbors"".sbatch"
 	echo $pbs_str
-	echo "#PBS -A GT-js585-biocluster
-#PBS -N clust_$min_dist_str""_$n_neighbors
-#PBS -l mem=128gb
-#PBS -l nodes=2:ppn=4
-#PBS -l walltime=44:00:00
-#PBS -j oe
-#PBS -o pbs_$min_dist_str""_$n_neighbors"".out
-#PBS -m abe
-#PBS -M ggruenhagen3@gatech.edu
+	echo "#!/bin/bash
+#SBATCH -A gts-js585-biocluster
+#SBATCH -Jclust_$min_dist_str""_$n_neighbors
+#SBATCH --mem=128gb
+#SBATCH -N 2 --ntasks-per-node=4
+#SBATCH -t 44:00:00
+#SBATCH -qinferno
+#SBATCH -opbs_$min_dist_str""_$n_neighbors"".out
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=ggruenhagen3@gatech.edu
 
-cd \$PBS_O_WORKDIR
+cd \$SLURM_SUBMIT_DIR
 module load anaconda3
 conda activate r4
 
 Rscript ~/scratch/brain/chooser/my/cluster.stability/examples/hb_chooser.R $batch_num $min_dist $n_neighbors 5" > $pbs_str
-qsub $pbs_str
+sbatch $pbs_str
 }
 
 # Clustering Parameters to Loop Through
