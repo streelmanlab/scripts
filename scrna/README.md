@@ -28,7 +28,7 @@ bash demux.bash <cell_bam> <gt_vcf> [options]
 The output file called demux_out.best (or if you're using a different basename, the output file called *.best) contains a columned called 'SNG.1ST', which is the most probable individual.
 
 ### Without Genotype Information (souporcell)
-Souporcell will categorize cells into groups based on the profile of SNPs in their reads. These groups or clusters represent inviduals. However, without genotyping information, we cannot say which group represents which individual. 
+Souporcell will categorize cells into groups based on the profile of SNPs in their reads. These groups or clusters represent inviduals. However, without genotyping information, we cannot say which group represents which individual. The ```<cell_raw_bam>``` file is the ```possorted_genome_bam.bam``` file in the cellranger output folder. Before this script can ran, the ```filtered_feature_bc_matrix/barcodes.tsv.gz``` needs to be gunzipped to ```barcodes.txt``` in the cellranger output folder.
 ```
 bash filter_cr_bam.bash <cell_raw_bam> <reference> [options]
 soup.bash <cell_bam> <reference> <gatk> <barcodes> <soup_py> <num_individuals> [options]
