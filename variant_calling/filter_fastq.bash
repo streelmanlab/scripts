@@ -33,8 +33,8 @@ get_input() {
 	shift
 	
 	name=filter_f_"$fastq1"
-	memory="mem=2gb"
-	time="walltime=10:00:00"
+	memory="4gb"
+	time="10:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="filter_f_\$PBS_JOBID.out"
@@ -71,19 +71,22 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -A GT-js585-biocluster 
-#PBS -l nodes=2:ppn=4
-#PBS -l $memory
-#PBS -l $time
-#PBS -j $writingOpts
-#PBS -o $outputFile
-#PBS -m $emailOpts
-#PBS -M $email
+	echo "#!/bin/bash
+#SBATCH -A gts-js585
+#SBATCH -J $name
+#SBATCH --mem=$memory
+#SBATCH -N 2 --ntasks-per-node=4
+#SBATCH -t $time
+#SBATCH -q inferno
+#SBATCH -o $outputFile
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=gwg@gatech.edu
+
 cd \$PBS_O_WORKDIR
 module load ngsqc_toolkit/2.3.3/
 module load anaconda3
 conda activate r4
-IlluQC.pl -pe $fastq1 $fastq2 N A" > filter_fastq.pbs
+IlluQC.pl -pe $fastq1 $fastq2 N A" > filter_fastq.sbatch
 }
 
 main() {
@@ -91,7 +94,7 @@ main() {
 	check_files
 	generate_pbs
 	
-	qsub filter_fastq.pbs
+	sbatch filter_fastq.sbatch
 }
 
 
