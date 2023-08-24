@@ -39,8 +39,8 @@ get_input() {
 	
 	out="out.vcf"
 	name="gatk_concat"
-	memory="mem=1gb"
-	time="walltime=10:00:00"
+	memory="1gb"
+	time="10:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="gatk_concat.out"
@@ -80,19 +80,21 @@ generate_vcfString() {
 }
 
 generate_pbs() {
-	echo "#PBS -N $name
-#PBS -l nodes=2:ppn=4
-#PBS -l $time
-#PBS -q $cluster
-#PBS -j $writingOpts
-#PBS -o $outputFile
-#PBS -m $emailOpts
-#PBS -M $email
+	echo "#!/bin/bash
+#SBATCH -A gts-js585
+#SBATCH -J $name
+#SBATCH --mem=$memory
+#SBATCH -N 2 --ntasks-per-node=4
+#SBATCH -t $time
+#SBATCH -q inferno
+#SBATCH -o $outputFile
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=gwg@gatech.edu
 
-cd \$PBS_O_WORKDIR
+cd \$SLURM_SUBMIT_DIR
 module load java/1.8.0_25
 $gatk GatherVcfs $vcfString -O $out
-" > gatk_concat.pbs
+" > gatk_concat.sbatch
 }
 
 main() {
@@ -101,7 +103,7 @@ main() {
 	generate_vcfString
 	generate_pbs
 	
-	qsub gatk_concat.pbs
+	sbatch gatk_concat.sbatch
 }
 
 

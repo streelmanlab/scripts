@@ -35,8 +35,8 @@ get_input() {
 	shift
 	
 	name="$bam"
-	memory="mem=128gb"
-	time="walltime=8:00:00"
+	memory="128gb"
+	time="8:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="$bam"".out"
@@ -71,17 +71,18 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -A GT-js585-biocluster
-#PBS -N $name
-#PBS -l $memory
-#PBS -l nodes=2:ppn=4
-#PBS -l $time
-#PBS -j $writingOpts
-#PBS -o $outputFile
-#PBS -m $emailOpts
-#PBS -M $email
+	echo "#!/bin/bash
+#SBATCH -A gts-js585
+#SBATCH -J $name
+#SBATCH --mem=$memory
+#SBATCH -N 2 --ntasks-per-node=4
+#SBATCH -t $time
+#SBATCH -q inferno
+#SBATCH -o $outputFile
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=$email
 
-cd \$PBS_O_WORKDIR
+cd \$SLURM_SUBMIT_DIR
 module purge
 module load java
 
@@ -94,7 +95,7 @@ java -jar $picard MarkDuplicates I=$bam""_sorted.bam O=$bam""_dedup.bam METRICS_
 
 java -jar $picard AddOrReplaceReadGroups I=$bam""_dedup.bam O=$bam""_RG.bam RGID=$bam  RGLB=lib$bam RGPL=Illumina RGPU=unit$bam RGSM=$bam
 
-java -jar $picard BuildBamIndex I=$bam""_RG.bam" > bam_prep.pbs
+java -jar $picard BuildBamIndex I=$bam""_RG.bam" > bam_prep.sbatch
 }
 
 main() {
@@ -102,7 +103,7 @@ main() {
 	check_files
 	generate_pbs
 	
-	qsub bam_prep.pbs
+	sbatch bam_prep.sbatch
 }
 
 

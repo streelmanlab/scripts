@@ -54,10 +54,10 @@ get_input() {
 	exList=""
 	bothList=""
 	disableFilter=false
-	name="variant calling"
-	memory="mem=128gb"
+	name="variant_calling"
+	memory="128gb"
 	cores="nodes=1:ppn=1"
-	time="walltime=60:00:00"
+	time="60:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputDir="logs"
@@ -178,17 +178,20 @@ generate_xl_jobs() {
 
 generate_multi_pbs() {
 	echo $time
-	echo '#PBS -A GT-js585-biocluster
-#PBS -N haplocalling.$PBS_JOBID
-#PBS -l '"$time"'
-#PBS -l nodes=4:ppn=8
-#PBS -j oe
-#PBS -o '"$outputDir"'/out.$PBS_JOBID
-#PBS -m abe
-#PBS -M gwg@gatech.edu
+	echo '#!/bin/bash
+#SBATCH -A gts-js585
+#SBATCH -J '"$name"'
+#SBATCH --mem='"$memory"'
+#SBATCH -N 4 --ntasks-per-node=8
+#SBATCH -t '"$time"'
+#SBATCH -q inferno
+#SBATCH -o '"$outputDir"'/out.'"$SLURM_JOB_ID"'
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user='"$email"'
 
-cd $PBS_O_WORKDIR
-NP=$(wc -l < $PBS_NODEFILE)
+cd $SLURM_SUBMIT_DIR
+#NP=$(wc -l < $SLURM_JOB_NODELIST)
+NP=24
 
 # add all modules needed here
 module load parallel
@@ -230,9 +233,10 @@ head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | parallel -j $NP -k
 }
 
 make_batch() {
-	for ((i=0;i<$jobs;i+=$batch_size)); do
-		qsub -vBATCHSIZE=$batch_size,BATCHNUM=$((i / batch_size)) paralleljob.txt
-	done
+	#for ((i=0;i<$jobs;i+=$batch_size)); do
+	#	sbatch --export=BATCHSIZE=$batch_size --export BATCHNUM=$((i / batch_size)) paralleljob.txt
+	#done
+	sbatch --export=BATCHSIZE=$batch_size --export BATCHNUM=$((0 / batch_size)) paralleljob.txt
 	
 	rem=$(( jobs % batch_size ))
 	
