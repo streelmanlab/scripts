@@ -36,8 +36,8 @@ get_input() {
 	shift
 	shift
 	name="$out"
-	memory="mem=128gb"
-	time="walltime=40:00:00"
+	memory="128gb"
+	time="40:00:00"
 	cluster="biocluster-6"
 	writingOpts="oe"
 	outputFile="$out"".out"
@@ -85,14 +85,16 @@ check_files() {
 }
 
 generate_pbs() {
-	echo "#PBS -A GT-js585-biocluster
-#PBS -l $memory
-#PBS -l nodes=2:ppn=4
-#PBS -l $time
-#PBS -j $writingOpts
-#PBS -o $outputFile
-#PBS -m $emailOpts
-#PBS -M $email
+	echo "#!/bin/bash
+#SBATCH -A gts-js585
+#SBATCH -J $name
+#SBATCH --mem=$memory
+#SBATCH -N 2 --ntasks-per-node=4
+#SBATCH -t $time
+#SBATCH -q inferno
+#SBATCH -o $outputFile
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=$email
 
 cd \$PBS_O_WORKDIR
 module purge
@@ -100,7 +102,7 @@ module load anaconda3
 module load bwa/0.7.17
 conda activate r4
 bwa mem -M $ref $fastq1 $fastq2 > $out"".sam     #creates the SAM
-samtools view -bS $out"".sam > $out       #Converts to BAM" > filtered_fastq_to_bam.pbs
+samtools view -bS $out"".sam > $out       #Converts to BAM" > filtered_fastq_to_bam.sbatch
 }
 
 main() {
@@ -108,7 +110,7 @@ main() {
 	check_files
 	generate_pbs
 	
-	qsub filtered_fastq_to_bam.pbs
+	sbatch filtered_fastq_to_bam.sbatch
 }
 
 
