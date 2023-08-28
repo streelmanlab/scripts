@@ -179,19 +179,20 @@ generate_xl_jobs() {
 generate_multi_pbs() {
 	echo $time
 	echo '#!/bin/bash
-#SBATCH -A gts-js585
+#SBATCH -A gts-js585-biocluster
 #SBATCH -J '"$name"'
 #SBATCH --mem='"$memory"'
 #SBATCH -N 4 --ntasks-per-node=8
 #SBATCH -t '"$time"'
 #SBATCH -q inferno
-#SBATCH -o '"$outputDir"'/out.'"$SLURM_JOB_ID"'
+#SBATCH -o '"$outputDir"'/out_%x_%j.out
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user='"$email"'
 
-cd $SLURM_SUBMIT_DIR
+#cd $SLURM_SUBMIT_DIR
+echo $SLURM_SUBMIT_DIR
 #NP=$(wc -l < $SLURM_JOB_NODELIST)
-NP=24
+NP=32
 
 # add all modules needed here
 module load parallel
@@ -200,16 +201,25 @@ module load parallel
 #If they are not, use some defaults.
 # By setting BATCHSIZE to a default of the length of the jobfile we only require one of these jobs.
 # The user can submit multiple jobs and split up the batchcount to work on multiple nodes.
+#echo $JOBFILE
 JOBFILE=${JOBFILE:-jobs.txt}
+#echo $JOBFILE
 
 if [ ! -f $JOBFILE ]; then echo "File $JOBFILE does not exist. Exiting"; exit 0; fi
 
+echo $BATCHSIZE
 BATCHSIZE=${BATCHSIZE:-$(wc -l < $JOBFILE)}
+echo $BATCHSIZE
+
+echo $BATCHNUM
 BATCHNUM=${BATCHNUM:-0}
+echo $BATCHNUM
 
 JOBCOUNT=$(wc -l < $JOBFILE)
+echo $JOBCOUNT
 
 ENDLINE=$(($BATCHSIZE*$BATCHNUM + $BATCHSIZE))
+echo $ENDLINE
 
 if [ $ENDLINE -gt $JOBCOUNT ]
 then
@@ -226,17 +236,22 @@ then
 fi
 
 BATCHSIZE=${REMAININGJOBCOUNT:-$BATCHSIZE}
+echo $BATCHSIZE
 
+head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | cat
 head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | parallel -j $NP -k 
 #head -n $ENDLINE $JOBFILE | tail -n $BATCHSIZE | cat -j $NP -k
 ' > paralleljob.txt
 }
 
 make_batch() {
-	#for ((i=0;i<$jobs;i+=$batch_size)); do
-	#	sbatch --export=BATCHSIZE=$batch_size --export BATCHNUM=$((i / batch_size)) paralleljob.txt
-	#done
-	sbatch --export=BATCHSIZE=$batch_size --export BATCHNUM=$((0 / batch_size)) paralleljob.txt
+	echo $batch_size
+	for ((i=0;i<$jobs;i+=$batch_size)); do
+		sbatch --export=BATCHSIZE=$batch_size,BATCHNUM=$((i / batch_size)) paralleljob.txt
+	done
+	
+	#sbatch --export=BATCHSIZE=$batch_size,BATCHNUM=$((0 / batch_size)) paralleljob.txt
+	#sbatch --export=BATCHSIZE=$batch_size paralleljob.txt
 	
 	rem=$(( jobs % batch_size ))
 	
