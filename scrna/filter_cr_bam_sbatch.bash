@@ -5,11 +5,16 @@
 
 #Usage statement
 usage () {
-        echo "Usage: bash filter_cr_bam.bash <cell_raw_bam> <reference> [options]
+        echo "Usage: bash filter_cr_bam.bash <cell_raw_bam> <reference> [options] [sbatch options]
 		
 		cell_raw_bam: bam file of reads from cells/nuclei (unfiltered file called possorted_genome_bam.bam)
 		reference: reference genome	
-		
+
+  		options:
+  		-n no sbatch (ie run the script as a bash script instead of launching sbatch jobs)
+    		-c keep only reads that cellranger keeps
+
+      		sbatch options:
 		-N Name of Job
 		-t hh:mm:ss time needed, job will be killed if exceeded (default walltime: 4:00:00)
 		-j controls what gets written to the ouputfile
@@ -34,6 +39,8 @@ get_input() {
 	shift
 	shift
 
+ 	no_sbatch=""
+  	cr_reads=""
 	name="filter_cr_bam"
 	memory="mem=64gb"
 	time="4:00:00"
@@ -41,9 +48,11 @@ get_input() {
 	outputFile="filter_cr_bam.out"
 	emailOpts="BEGIN,END,FAIL"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "N:l:t:j:o:m:M:h" opt; do
+	while getopts "n:c:N:l:t:j:o:m:M:h" opt; do
 		case $opt in
-		N ) name=$OPTARG ;;
+		n ) no_sbatch=$OPTARG ;;
+  		c ) cr_reads=$OPTARG ;;
+  		N ) name=$OPTARG ;;
 		l ) memory=$OPTARG ;;
 		t ) time=$OPTARG ;;
 		j ) writingOpts=$OPTARG ;;
@@ -69,8 +78,8 @@ check_files() {
 }
 
 
-generate_pbs() {
-	echo "#!/bin/bash
+generate_cmd() {
+	pbs_str="#!/bin/bash
 #SBATCH -A gts-js585
 #SBATCH -J $name
 #SBATCH -N 2 --ntasks-per-node=4
@@ -82,13 +91,20 @@ generate_pbs() {
 cd \$SLURM_SUBMIT_DIR
 source ~/.bashrc
 conda activate r4
-
-# Subset good quality reads
+"
+	bash_str="# Subset good quality reads
 echo '\nSubset good quality reads (George)\n'
 samtools view -S -b -q 10 -F 3844 $cell_raw_bam > filtered_qc.bam
 samtools view filtered_qc.bam > filtered_qc.sam
-grep 'xf:i:25' filtered_qc.sam > filtered_qc_cr.sam
 
+"
+	if [ ! -z $cr_reads ]; then
+ 		bash_str="${bash_str} grep 'xf:i:25' filtered_qc.sam > filtered_qc_cr.sam"
+   	else
+    		bash_str="${bash_str} filtered_qc.sam > filtered_qc_cr.sam"
+   	fi
+
+     	bash_str="${bash_str}
 # Keep only cells that Cellranger keeps
 cp barcodes.txt filter.txt
 sed -i -e 's/^/CB:Z:/' filter.txt
@@ -102,16 +118,21 @@ samtools sort filtered_qc_cr_cell_header.bam -@ 24 > filtered_qc_cr_cell_header_
 mv filtered_qc_cr_cell_header_sort.bam filtered_final.bam
 samtools index filtered_final.bam
 
-" > filter_cr_bam.sbatch
+"
+	if [ -z "$no_sbatch" ]; then
+		echo $pbs_str $bash_str > filter_cr_bam.sbatch
+  		sbatch filter_cr_bam.sbatch
+  	else
+   		echo $bash_str > tmp.bash
+     		bash tmp.bash
+       		rm tmp.bash
+   	fi
 }
 
 main() {
 	get_input "$@"
 	check_files
-	generate_pbs
-	
-	sbatch filter_cr_bam.sbatch
+	generate_cmd
 }
-
 
 main "$@"
