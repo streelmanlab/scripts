@@ -53,7 +53,7 @@ make_edit_vcf_awk() {
   	n_col=$((n + 9)) 
       	echo "
       	new_str$n=\"./.\"
-	if (substr($""$n_col,1,3 != \"./.\") {
+	if (substr($""$n_col,1,3 != \"./.\")) {
                 new_str1=\"\"
                 if (substr($n_col,1,1) == \"0\") {
                         new_str$n=new_str$n\"0\"
