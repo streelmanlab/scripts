@@ -64,16 +64,18 @@ make_edit_vcf_awk() {
         }
 " >> edit_vcf.awk
   done
-	echo "
+	echo -n "
         if (" >> edit_vcf.awk
 	for n in $(seq 1 $num_ind); do
  		if [ $n != $num_ind ]; then
-			echo -n "new_str$n != './.' &&" >> edit_vcf.awk
+			echo -n "new_str$n != './.' && " >> edit_vcf.awk
       		else
  			echo -n "new_str$n != './.') {
 " >> edit_vcf.awk
     		fi
       	done
+       	echo -n "
+        	if (" >> edit_vcf.awk
        	for n in $(seq 2 $num_ind); do
 		if [ $n != $num_ind ]; then
 			echo -n "new_str1 != new_str$n || " >> edit_vcf.awk
@@ -82,12 +84,12 @@ make_edit_vcf_awk() {
 " >> edit_vcf.awk
      		fi
        	done
-	echo "print $""1, $""2, $""3, $""4, $""5, $""6, $""7, $""8, $""9, " >> edit_vcf.awk
+	echo "					print $""1, $""2, $""3, $""4, $""5, $""6, $""7, $""8, $""9, " >> edit_vcf.awk
  	for n in $(seq 2 $num_ind); do
   		if [ $n != $num_ind ]; then
-  			echo -n "new_str$n, "
+  			echo -n "new_str$n, " >> edit_vcf.awk
      		else
-       			echo -n "new_str$n"
+       			echo -n "new_str$n" >> edit_vcf.awk
        		fi
 	done
   	echo"
