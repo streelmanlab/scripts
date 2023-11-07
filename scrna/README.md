@@ -20,7 +20,7 @@ Demuxlet compares the variants present in the RNA reads of single cells to the D
 ```
 bash filter_cr_bam_sbatch.bash sample1/outs/possorted_genome_bam.bam my_ref [options] [pbs_options]
 ```
-The command above just created a filtered bam file called ```filtered_final.bam``` that we can use as input to demuxlet. Next, perform variant calling needs to performed on the genotyped individual (see the [variant calling scripts in this repository](../variant_calling/README.md)). Once the variant calling is complete, we will have a vcf file containing a column for every individual. For the sake of this tutorial, let's call that file ```dna.vcf```.
+The command above just created a filtered bam file called ```filtered_final.bam``` that we can use as input to demuxlet. Before we do that though, variant calling needs to performed on the genotyped individual (see the [variant calling scripts in this repository](../variant_calling/README.md)). Once the variant calling is complete, we will have a vcf file containing a column for every individual. For the sake of this tutorial, let's call that file ```dna.vcf```.
 
 This next step is optional, but generally recommended -> Lets filter the vcf files to include only biallelic SNPs. 
 ```
