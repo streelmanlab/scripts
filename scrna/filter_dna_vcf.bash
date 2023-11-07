@@ -70,7 +70,15 @@ make_edit_vcf_awk() {
 main() {
 	get_input "$@"
 	check_files
-  	make_edit_vcf_awk
+  	
+    	echo "Filtering out sites where all individuals have the same genotypes"
+   	make_edit_vcf_awk	
+    	awk -f edit_vcf.awk $dna_vcf > tmp.vcf
+	
+    	echo "Adding header back into the file"
+	grep "^>" $dna_vcf > tmp_header.vcf
+ 	cat tmp_header.vcf tmp.vcf > dna_vcf_filtered.vcf
+     	echo "All Done"
 }
 
 
