@@ -54,13 +54,13 @@ make_edit_vcf_awk() {
       	echo "
       	new_str$n=\"./.\"
 	if (substr($""$n_col,1,3 != \"./.\") {
-                new_str1=''
-                if (substr($n_col,1,1) == '0') {
-                        new_str1=new_str1'0'
-                } else { new_str1=new_str1'1' }
-                if (substr($n_col,3,1) == '0') {
-                        new_str1=new_str1'/0'
-                } else { new_str1=new_str1'/1' }
+                new_str1=\"\"
+                if (substr($n_col,1,1) == \"0\") {
+                        new_str$n=new_str$n\"0\"
+                } else { new_str$n=new_str$n\"1\" }
+                if (substr($n_col,3,1) == \"0\") {
+                        new_str$n=new_str$n\"/0\"
+                } else { new_str$n=new_str$n\"/1\" }
         }
 " >> edit_vcf.awk
   done
