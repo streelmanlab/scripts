@@ -58,7 +58,7 @@ make_edit_vcf_awk() {
 main() {
 	get_input "$@"
 	check_files
-  make_edit_vcf_awk()
+  	make_edit_vcf_awk
 }
 
 
