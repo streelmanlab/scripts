@@ -50,7 +50,9 @@ make_edit_vcf_awk() {
 { 
 " > edit_vcf.awk
   for n in $(seq 1 $num_ind); do
-      "new_str$n='./.'" >> edit_vcf.awk
+      echo "new_str$n='./.'
+	if (substr(
+" >> edit_vcf.awk
   done
   echo "}" >> edit_vcf.awk
 }
