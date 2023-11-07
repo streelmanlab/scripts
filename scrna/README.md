@@ -14,13 +14,13 @@ When all jobs are complete, run ```hb_chooser_collect.R``` to read those results
 
 **Prerequisites**: complete the cellranger pipeline (ie cellranger mkfastq and count) on a pool
 
-**-- Note to users not on HPC --**: use the ```-n``` flags for all of the commands in this pipeline (this will execute the commands using a bash script instead launching jobs with a job manager on an HPC)
+**-- Note to users not on HPC --**: use the ```-n``` flags for ```filter_cr_bam_sbatch.bash``` command (this will execute the commands using a bash script instead launching jobs with a job manager on an HPC)
 
 Demuxlet compares the variants present in the RNA reads of single cells to the DNA reads of genotyped individuals in order to determine which cells came from which individuals. First, the reads from ```cellranger count``` need to be filtered to keep only good quality reads. We will do this with the command below, but first for the sake of this tutorial, let's briefly use some arbitrary names like a real-world example. In this tutorial, let's say the output folder created from ```cellranger count``` is called ```sample1``` and let's say that the reference genome we created from ```cellranger mkref``` is called ```my_ref```. Then, to filter our reads we would execute the command below.
 ```
 bash filter_cr_bam_sbatch.bash sample1/outs/possorted_genome_bam.bam my_ref [options] [pbs_options]
 ```
-The command above just created a filtered bam file called ```filtered_final.bam``` that we can use in variant calling. Next, perform variant calling using that bam file (see the [variant calling scripts in this repository](../variant_calling/README.md)). Once the variant calling is complete, we will have a vcf file containing a column for every cell. For the sake of this tutorial, let's call that file ```cells.vcf```. Additionally, variant calling needs to performed on the genotyped individuals. Once complete, we will have a vcf file containing a column for every individual. For the sake of this tutorial, let's call that file ```dna.vcf```.
+The command above just created a filtered bam file called ```filtered_final.bam``` that we can use as input to demuxlet. Next, perform variant calling needs to performed on the genotyped individual (see the [variant calling scripts in this repository](../variant_calling/README.md)). Once the variant calling is complete, we will have a vcf file containing a column for every individual. For the sake of this tutorial, let's call that file ```dna.vcf```.
 
 This next step is optional, but generally recommended -> Lets filter the vcf files to include only biallelic SNPs. 
 ```
@@ -28,26 +28,13 @@ vcftools dna.vcf --remove-indels --min-alleles 2 --max-alleles 2 --recode --stdo
 ```
 Now, let's filter the vcf file from the genotyped individual to only contain SNPs where not all the individuals have the same genotypes.
 ```
+bash filter_dna_vcf.bash dna_bi.vcf <num_ind>
 ```
 Finally, let's run demuxlet!
 ```
-bash demux.bash <cell_bam> <gt_vcf> [options]
+bash demux.bash sample1/outs/filtered_final.bam dna_bi.vcf [options]
 ```
 The output file called demux_out.best (or if you're using a different basename, the output file called *.best) contains a column called 'SNG.1ST', which is the most probable individual.
-
-### OLD
-Then, call variants in the genotyped inviduals following the variant calling pipeline from the variant_calling folder in this repository. TODO (Clean this stuff up): the files we got from the core for our genotyped inviduals ended up creating vcf files with 2 columns per 1 invidual. Here are a few commands to get these 2 columns into 1 column. This is setup only to handle 4 inviduals at a time and isn't in a nice format to handle lots different inputs. The output file from the variant calling pipeline is called new_b1.vcf. The important lines that need to be run no matter what are the last few where I take sites where all the inviduals don't have the same genotype.
-```
-bcftools view --max-alleles 2 new_b1.vcf > new_b1_bi.vcf
-head -n 1714 new_b1_bi.vcf > new_b1_for_demux.vcf
-echo "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t1B11\t1B18\t1B4\t1B5" >> new_b1_for_demux.vcf
-grep -v "^#" new_b1_bi.vcf | ./edit_vcf_4.awk >> new_b1_for_demux.vcf
-```
-Now, it's time to run demuxlet.
-```
-bash demux.bash <cell_bam> <gt_vcf> [options]
-```
-The output file called demux_out.best (or if you're using a different basename, the output file called *.best) contains a columned called 'SNG.1ST', which is the most probable individual.
 
 ### Without Genotype Information (souporcell)
 Souporcell will categorize cells into groups based on the profile of SNPs in their reads. These groups or clusters represent inviduals. However, without genotyping information, we cannot say which group represents which individual. The ```<cell_raw_bam>``` file is the ```possorted_genome_bam.bam``` file in the cellranger output folder. Before this script can ran, the ```filtered_feature_bc_matrix/barcodes.tsv.gz``` needs to be gunzipped to ```barcodes.txt``` in the cellranger output folder.
