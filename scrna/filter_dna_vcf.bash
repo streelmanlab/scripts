@@ -68,9 +68,9 @@ make_edit_vcf_awk() {
         if (" >> edit_vcf.awk
 	for n in $(seq 1 $num_ind); do
  		if [ $n != $num_ind ]; then
-			echo -n "new_str$n != './.' && " >> edit_vcf.awk
+			echo -n "new_str$n != \"./.\" && " >> edit_vcf.awk
       		else
- 			echo -n "new_str$n != './.') {
+ 			echo -n "new_str$n != \"./.\") {
 " >> edit_vcf.awk
     		fi
       	done
