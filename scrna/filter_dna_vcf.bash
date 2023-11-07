@@ -52,8 +52,8 @@ make_edit_vcf_awk() {
   for n in $(seq 1 $num_ind); do
   	n_col=$((n + 9)) 
       	echo "
-      	new_str$n='./.'
-	if (substr($""$n_col,1,3 != './.') {
+      	new_str$n=\"./.\"
+	if (substr($""$n_col,1,3 != \"./.\") {
                 new_str1=''
                 if (substr($n_col,1,1) == '0') {
                         new_str1=new_str1'0'
