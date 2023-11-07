@@ -50,15 +50,15 @@ make_edit_vcf_awk() {
 { 
 " > edit_vcf.awk
   for n in $(seq 1 $num_ind); do
-  	n9=$n+9
+  	n_col=$((n + 9)) 
       	echo "
       	new_str$n='./.'
-	if (substr($""$n9,1,3 != './.') {
+	if (substr($""$n_col,1,3 != './.') {
                 new_str1=''
-                if (substr($n9,1,1) == '0') {
+                if (substr($n_col,1,1) == '0') {
                         new_str1=new_str1'0'
                 } else { new_str1=new_str1'1' }
-                if (substr($n9,3,1) == '0') {
+                if (substr($n_col,3,1) == '0') {
                         new_str1=new_str1'/0'
                 } else { new_str1=new_str1'/1' }
         }
