@@ -9,7 +9,8 @@ usage () {
 		
 		cell_bam: bam file of reads from cells/nuclei (filtered to keep only good reads)
 		gt_vcf:   vcf file originating from genotyped individuals
-		
+
+  		-n no sbatch (ie run the script as a bash script instead of launching sbatch jobs)
 		-O basename for output demuxlet files (default: demux_out)
 		-N Name of Job
 		-t hh:mm:ss time needed, job will be killed if exceeded (default walltime: 1:00:00)
@@ -35,6 +36,7 @@ get_input() {
 	shift
 	shift
 
+ 	no_sbatch=""
 	out="demux_out"
 	name="demux"
 	memory="mem=64gb"
@@ -43,8 +45,9 @@ get_input() {
 	outputFile="demux.out"
 	emailOpts="abe"
 	email="ggruenhagen3@gatech.edu"
-	while getopts "O:N:l:t:j:o:m:M:h" opt; do
+	while getopts "n:O:N:l:t:j:o:m:M:h" opt; do
 		case $opt in
+  		n ) no_sbatch=$OPTARG ;;
 		O ) out=$OPTARG ;;
 		N ) name=$OPTARG ;;
 		l ) memory=$OPTARG ;;
@@ -73,7 +76,7 @@ check_files() {
 
 
 generate_pbs() {
-	echo "#PBS -A GT-js585
+	pbs_str="#PBS -A GT-js585
 #PBS -N $name
 #PBS -l nodes=2:ppn=4
 #PBS -l $time
@@ -83,17 +86,25 @@ generate_pbs() {
 #PBS -M $email
 
 cd \$PBS_O_WORKDIR
+"
 
-demuxlet --sam $cell_bam --vcf $gt_vcf --out $out --field GT
-" > demux.pbs
+	bash_str="demuxlet --sam $cell_bam --vcf $gt_vcf --out $out --field GT
+"
+
+	if [ -z "$no_sbatch" ]; then
+		echo $pbs_str $bash_str > demux.pbs
+  		qsub demux.pbs
+  	else
+   		echo $bash_str > tmp.bash
+     		bash tmp.bash
+       		rm tmp.bash
+   	fi
 }
 
 main() {
 	get_input "$@"
 	check_files
 	generate_pbs
-	
-	qsub demux.pbs
 }
 
 
