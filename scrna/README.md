@@ -14,7 +14,7 @@ When all jobs are complete, run ```hb_chooser_collect.R``` to read those results
 
 **Prerequisites**: complete the cellranger pipeline (ie cellranger mkfastq and count) on a pool
 
-**-- Note to users not on HPC --**: use the ```-n``` flags for ```filter_cr_bam_sbatch.bash``` command (this will execute the commands using a bash script instead launching jobs with a job manager on an HPC)
+**-- Note to users not on HPC --**: use the ```-n``` flags for ```filter_cr_bam_sbatch.bash``` and  ```demux.bash``` commands (this will execute the commands using a bash script instead launching jobs with a job manager on an HPC)
 
 Demuxlet compares the variants present in the RNA reads of single cells to the DNA reads of genotyped individuals in order to determine which cells came from which individuals. First, the reads from ```cellranger count``` need to be filtered to keep only good quality reads. We will do this with the command below, but first for the sake of this tutorial, let's briefly use some arbitrary names like a real-world example. In this tutorial, let's say the output folder created from ```cellranger count``` is called ```sample1``` and let's say that the reference genome we created from ```cellranger mkref``` is called ```my_ref```. Then, to filter our reads we would execute the command below.
 ```
